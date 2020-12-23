@@ -1,0 +1,21 @@
+.dialogs {
+    display: flex;
+    padding: 10px;
+}
+
+.dialogsBlock a {
+    color: black;
+    text-decoration: none;
+}
+
+a.activeLink {
+    color: white;
+}
+
+.messageBlock {
+    padding-left: 30px;
+}
+
+.itemMessage {
+    margin-top: 2px;
+}

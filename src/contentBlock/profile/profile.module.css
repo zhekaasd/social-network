@@ -1,0 +1,19 @@
+.myNewPost img {
+    border-radius: 50px;
+}
+
+.postsBlock {
+    padding: 10px;
+}
+
+.avatarImg {
+    margin: 10px;
+}
+
+.addNewPost {
+    margin: 10px;
+}
+
+.likeStats {
+    margin: 5px;
+}

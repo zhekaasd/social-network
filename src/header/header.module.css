@@ -1,0 +1,24 @@
+.header {
+    border: 2px solid blueviolet;
+    grid-area: hdr;
+    background-color: fuchsia;
+}
+
+.loginBlock {
+    float: right;
+}
+
+.loginBlock a {
+    color: white;
+}
+
+.loginContainer {
+    display: flex;
+    align-items: center;
+}
+
+.loginContainer img {
+    width: 75px;
+    border-radius: 50px;
+    margin-right: 10px;
+}

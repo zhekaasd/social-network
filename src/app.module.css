@@ -6,6 +6,16 @@
     grid-template-areas:
           "hdr hdr"
           "sbr ctb";
+
+
+}
+
+
+.WrapperContent {
+    border: 2px solid chartreuse;
+    grid-area: ctb;
+    background-color: gray;
+    color: chartreuse;
 }
 
 

@@ -1,0 +1,36 @@
+.userData {
+    display: flex;
+    padding: 10px;
+}
+
+.userAvatarButton {
+    display: flex;
+    flex-direction: column;
+}
+
+.userAvatarButton img   {
+    border-radius: 50%;
+}
+
+.description {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.descriptionInformation {
+    display: flex;
+    flex-direction: column;
+    color: black;
+}
+
+.descriptionLocation {
+    display: flex;
+    flex-direction: column;
+    color: burlywood;
+}
+
+.classActive {
+    font-weight: bold;
+    background: salmon;
+}
