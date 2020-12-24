@@ -1,7 +1,6 @@
 import {
     addNewMessageActionCreator,
     InitialStateDialogsType,
-    updateNewMessageTextActionCreator,
     DialogsActionType
 } from "../../redux/dialogs-reducer";
 import {AppStateType} from "../../redux/redux-store";
@@ -18,8 +17,7 @@ type MapStatePropsType = {
 
 /*---Типизация колбеков передаваемых в компоненту - Dialogs---*/
 type MapDispatchPropsType = {
-    addNewMessage: () => void
-    updateMessageText: (text:string) => void
+    addNewMessage: (addMessage: string) => void
 }
 
 /*---Прокидываем через пропсы в компоненту нужную нам часть данных из стейта---*/
@@ -33,13 +31,8 @@ let mapStateToProps = (state: AppStateType): MapStatePropsType => {
 let mapDispatchToProps = (dispatch: Dispatch<DialogsActionType>): MapDispatchPropsType => {
     return {
         /*---Добавляем\отправляем сообщение в главный стейт---*/
-        addNewMessage: () => {
-            dispatch(addNewMessageActionCreator());
-        },
-        /*---Обновляем введеннёо нами сообщение внутри главного стейта--- */
-        updateMessageText: (text: string) => {
-            let action = updateNewMessageTextActionCreator(text);
-            dispatch(action);
+        addNewMessage: (addMessage: string) => {
+            dispatch(addNewMessageActionCreator(addMessage));
         }
     }
 }

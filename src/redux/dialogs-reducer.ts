@@ -1,14 +1,12 @@
 
 /*---Константы для экшена---*/
 const ADD_NEW_MESSAGE = 'ADD-NEW-MESSAGE';
-const UPDATE_NEW_MESSAGE_TEXT = 'UPDATE-NEW-MESSAGE-TEXT';
 
 
 /*---Типизация иницилизационного стейта---*/
 export type InitialStateDialogsType = {
     messageDate: Array<InitialMessageDateType>
     dialogDate: Array<InitialDialogDateType>
-    messageText: string
 }
 
 
@@ -25,7 +23,7 @@ type InitialDialogDateType = {
 
 
 /*---Типизация всех использумых экшенов в редьюсере---*/
-export type DialogsActionType = UpdateNewMessageTextActionType | AddNewMessageActionType;
+export type DialogsActionType = AddNewMessageActionType;
 
 
 /*---Иницилизационный стейт с начальными данными---*/
@@ -41,8 +39,7 @@ let initialState: InitialStateDialogsType = {
         {id: '3', name: 'Katya'},
         {id: '41', name: 'Katya'},
         {id: '5', name: 'Vanya'},
-    ],
-    messageText: ''
+    ]
 }
 
 
@@ -52,13 +49,8 @@ const dialogsReducer = (state = initialState, action: DialogsActionType): Initia
             /*---Добавляем в уже имеющийся массив сообщений, новое сообщение---*/
             return  {
                 ...state,
-                messageDate: [...state.messageDate, {message: state.messageText}],
-                messageText: ''
+                messageDate: [...state.messageDate, {message: action.addMessage}]
             };
-
-        case UPDATE_NEW_MESSAGE_TEXT:
-            /*---Обновляем сообщение в стейте---*/
-            return  {...state, messageText: action.newTextMes};
 
         default:
             /*---Если не один из типов не выполнен, то вернём иницилизационное значение---*/
@@ -68,25 +60,17 @@ const dialogsReducer = (state = initialState, action: DialogsActionType): Initia
 
 
 /*---Типизация экшен крейторов---*/
-type UpdateNewMessageTextActionType = {
-    type: typeof UPDATE_NEW_MESSAGE_TEXT
-    newTextMes: string
-}
-
 type AddNewMessageActionType = {
     type: typeof ADD_NEW_MESSAGE
+    addMessage: string
 }
 
 
 /*---Экшен крейтор, который добавляет новое сообщение в стейт---*/
-export const addNewMessageActionCreator = (): AddNewMessageActionType => {
-    return {type: ADD_NEW_MESSAGE}
+export const addNewMessageActionCreator = (addMessage: string): AddNewMessageActionType => {
+    return {type: ADD_NEW_MESSAGE, addMessage: addMessage}
 };
 
-/*---Экшен крейтор, который обновояет введеное сообщение в стейт---*/
-export const updateNewMessageTextActionCreator = (text: string): UpdateNewMessageTextActionType => {
-    return {type: UPDATE_NEW_MESSAGE_TEXT, newTextMes: text}
-};
 
 
 export default dialogsReducer;

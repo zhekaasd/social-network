@@ -5,15 +5,17 @@ import usersReducer from "./users-reducer";
 import {applyMiddleware, combineReducers, createStore} from "redux";
 import {authReducer} from "./auth-reducer";
 import thunk from "redux-thunk";
+import { reducer as formReducer } from 'redux-form'
 
 
-/*---объединяя reducer-ы с помощью combineReducers, мы задаём структуру нашего единственного объекта-состояния---*/
+/*---объединяя reducer-ы с помощью combineReducers, мы задаём структуру нашего единственного объекта-состояния(также сюда добавляем редьюсер из redux-form)---*/
 let reducers = combineReducers({
     navDate: sidebarReducer,
     messagesPage: dialogsReducer,
     profilePage: profileReducer,
     users: usersReducer,
-    auth: authReducer
+    auth: authReducer,
+    form: formReducer
 });
 
 /*---определить автоматически тип всего объекта состояния(типизацию для нашего стейта)---*/

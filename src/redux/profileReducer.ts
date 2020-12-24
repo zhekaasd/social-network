@@ -3,7 +3,6 @@ import {profileAPI, usersAPI} from "../api/api";
 
 /*---Константы для экшена---*/
 const ADD_POST = 'ADD_POST';
-const UPDATE_NEW_POST_TEXT = 'UPDATE-NEW-POST-TEXT';
 const SET_USER_PROFILE = 'SET-USER-PROFILE';
 const SET_STATUS_USER = 'SET-STATUS-USER';
 
@@ -47,7 +46,6 @@ export type ProfileObject = {
 /*---Типизация иницилизационного стейта---*/
 type InitialStatePostPageType = {
     postDate: Array<InitialStatePostDateType>
-    newPostText: string
     profile: ProfileObject | null
     status: string
 }
@@ -79,13 +77,12 @@ let initialState: InitialStatePostPageType = {
             likeCount: '34'
         }
     ],
-    newPostText: '',
     profile: null,
     status: ''
 }
 
 /*---Типизация всех использумых экшенов в редьюсере---*/
-export type ProfileActionType = UpdateNewPostTextActionType | AddPostActionType |
+export type ProfileActionType = AddPostActionType |
     SetUserProfileActionType | SetStatusUserType;
 
 
@@ -96,16 +93,8 @@ const profileReducer = (state:InitialStatePostPageType = initialState, action: P
             зануляем текст в нашем стейте, который хранит текущее сообщение---*/
             return {
                 ...state,
-                postDate: [{id: 14, messagePost: state.newPostText, likeCount: '0'}, ...state.postDate],
-                newPostText: ''
+                postDate: [{id: 14, messagePost: action.newPostText, likeCount: '0'}, ...state.postDate]
             }
-
-        case UPDATE_NEW_POST_TEXT:
-            /*---Обновление сообщения из поля ввода в стейте---*/
-            return {
-                ...state,
-                newPostText: action.newText
-            };
 
         case SET_USER_PROFILE:
             /*---Сохраняем в стейт данные профиля конкретного пользователя---*/
@@ -132,13 +121,9 @@ type SetStatusUserType = {
 /*---Типизация экшен крейтора с добавлением нового поста в стейт---*/
 type AddPostActionType = {
     type: typeof ADD_POST
+    newPostText: string
 }
 
-/*---Типизация экшен крейтора с обновлением введенного сообщения в стейт---*/
-type UpdateNewPostTextActionType = {
-    type: typeof UPDATE_NEW_POST_TEXT
-    newText: string
-}
 
 /*---Типизация экшен крейтора с сохранением данных профиля пользователя в стейт---*/
 type SetUserProfileActionType = {
@@ -149,12 +134,8 @@ type SetUserProfileActionType = {
 
 
 /*---Экшен крейтор, добавления нового поста в стейт---*/
-export const addPostActionCreator = (): AddPostActionType => {return {type: ADD_POST}};
+export const addPostActionCreator = (newPostText: string): AddPostActionType => {return {type: ADD_POST, newPostText: newPostText}};
 
-/*---Экшен крейтор, который обновояет введеное сообщение в стейт---*/
-export const updateNewPostTextActionCreator = (text: string): UpdateNewPostTextActionType => {
-    return {type: UPDATE_NEW_POST_TEXT, newText: text}
-};
 
 /*---Экшен крейтор, возвращающий данные о текущем пользователе---*/
 export const setUserProfileAC = (profile: ProfileObject) => {

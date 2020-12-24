@@ -10,7 +10,7 @@ import {
     unfollowTC,
 } from "../../redux/users-reducer";
 import Users from "./Users";
-import {Preloader} from "../../components/preloader/Preloader";
+import {Preloader} from "../../common/preloader/Preloader";
 import {withAuthRedirect} from "../../hoc/withAuthRedirect";
 import {compose} from "redux";
 
@@ -115,7 +115,7 @@ class UsersContainer extends React.Component<IUsersPropsType, {}> {
 })(AuthRedirectComponent);*/
 
 
-export default compose(
+export default compose<any>(
     connect<MapStateToPropsType, MapDispatchToPropsType, {}, AppStateType>(mapStateToProps, {
         follow: followTC,
         unfollow: unfollowTC,

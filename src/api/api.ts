@@ -38,6 +38,13 @@ export const usersAuth = {
     authMe() {
         /*---Запрос на сервер за авторизацией---*/
         return instance.get(`auth/me`)
+    },
+        /*---Запрос за логинизацией---*/
+    login(email: string, password: string, rememberMe: boolean = false) {
+        return instance.post('auth/login', {email, password, rememberMe})
+    },
+    logout() {
+        return instance.delete('auth/login')
     }
 }
 

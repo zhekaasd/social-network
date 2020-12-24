@@ -3,14 +3,16 @@ import Messages from "./messages/Messages";
 import DialogUser from "./dialog/DialogUser";
 import {InitialStateDialogsType} from "../../redux/dialogs-reducer";
 import styles from "./dialogs.module.css";
+import {Field, InjectedFormProps, reduxForm} from "redux-form";
+import {maxLength, required} from "../../utils/validators";
+import {Textarea} from "../../common/FormControl/FormControl";
 
 /*---Типизация входящих пропсов для компоненты - Dialogs---*/
 type DialogsPropsType = {
     // id: string
     // name: string
     // message: string
-    addNewMessage: () => void
-    updateMessageText: (value: string) => void //undefined?
+    addNewMessage: (addMessage: string) => void
     messagesPage: InitialStateDialogsType
 }
 
@@ -24,26 +26,13 @@ const Dialogs = (props: DialogsPropsType) => {
     let dialogItem = state.dialogDate.map( dialog =>  <DialogUser key={dialog.id} name={dialog.name} id={dialog.id} />  );
 /*---Достаем из стейта массив с сообщениями, проходимся по нему, и отображаем сообщения из диалога с конкретным пользователем---*/
     let messageItem = state.messageDate.map( message => <Messages message={message.message} />);
-/*---Текущее состояние впечатываемого сообщения в стейте---*/
-    let newMessageText = state.messageText;
 
 
 
 /*---Добавление сообщения в массив стейта с сообщениями---*/
-    let addNewMess = () => {
-        props.addNewMessage();
+    let addNewMess = (values: DataAddMessageDialogFormType) => {
+        props.addNewMessage(values.addDialogMessage);
     }
-
-
-/*---Изменение в стейте текущего состояние впечатываемого сообщения---*/
-    let updateTextMessage = (event: ChangeEvent<HTMLTextAreaElement>) => {
-/*---Проверяем существует ли состояние---*/
-        if (event.currentTarget) {
-/*---Колбек обновляющий в стейте впечатываемое сообщение---*/
-            props.updateMessageText(event.currentTarget.value);
-        }
-    }
-
 
     return (
 /*---Отображение списка диалогов---*/
@@ -54,11 +43,33 @@ const Dialogs = (props: DialogsPropsType) => {
 {/*---Отображение списка сообщений с полем ввода сообщения и кнопкой добавляющий это самое сообщение в стейт---*/}
             <div className={styles.messageBlock}>
                 {messageItem}
-                <textarea onChange={updateTextMessage} value={newMessageText}/>
-                <div><button onClick={addNewMess}>add</button></div>
+                <DialogReduxForm onSubmit={addNewMess} />
             </div>
         </div>
     )
 }
 
 export default Dialogs;
+
+/*---Типизация для формы в диалогах---*/
+type DataAddMessageDialogFormType = {
+    addDialogMessage: string
+}
+
+/*---Функция-валидатор, контролирующий количество допустимых символов в поле ввода---*/
+const lengthMessage = maxLength(15);
+
+/*---Форма для диалогов---*/
+const AddMessageDialogForm: React.FC<InjectedFormProps<DataAddMessageDialogFormType>> = (props) => {
+    return <form onSubmit={props.handleSubmit}>
+        {/*---Специальная компонента из библиотеки redux-form, которая самостоятельно контролирует все манипуляции с элементом, и общается со стейтом---*/}
+        <Field component={Textarea} name={'addDialogMessage'} validate={[required, lengthMessage]} />
+        <div>
+            <button>add</button>
+        </div>
+    </form>
+}
+
+/*---Оборачиваем нашу форму, HOC-компонентой из redux-form, чтобы она самостоятельно выполняла все манипуляции с данными формы,
+а также, "общалась" со стейтом---*/
+const DialogReduxForm = reduxForm<DataAddMessageDialogFormType>({form: 'dialogMessageForm'})(AddMessageDialogForm);
