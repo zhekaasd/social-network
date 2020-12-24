@@ -1,5 +1,6 @@
 import React from "react";
 import styles from "./../../profile.module.css";
+import avatar from "../../../../assets/image/avatar.png"
 
 /*---Типизация входящих пропсов для компоненты - Post---*/
 type PostPropsType = {
@@ -12,7 +13,7 @@ type PostPropsType = {
 const Post = (props: PostPropsType) => {
     return (
         <div className={styles.avatarImg}>
-            <img src="https://cs5.pikabu.ru/post_img/2014/12/05/12/1417810022_1606215082.jpg"
+            <img src={avatar}
                  height='50px'
                  width='50px'
                  alt="asd"/>

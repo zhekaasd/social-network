@@ -39,11 +39,12 @@ export const usersAuth = {
         /*---Запрос на сервер за авторизацией---*/
         return instance.get(`auth/me`)
     },
-        /*---Запрос за логинизацией---*/
     login(email: string, password: string, rememberMe: boolean = false) {
+        /*---Запрос на создание сессии, логинизация и отправка необхдимых данных---*/
         return instance.post('auth/login', {email, password, rememberMe})
     },
     logout() {
+        /*---Запрос за удаление сессии, разлогинизация и удаление очистка куки---*/
         return instance.delete('auth/login')
     }
 }

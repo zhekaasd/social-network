@@ -1,12 +1,13 @@
 import React from 'react';
 import style from "./header.module.css";
 import {InitialStateAuthType} from "../redux/auth-reducer";
-import userLogo from "../assets/image/585e4bf3cb11b227491c339a.png"
+import userLogo from "../assets/image/avatar.png"
 import {NavLink} from "react-router-dom";
 
 /*---Типизация компоненты - Header---*/
 type HeaderPropsType = {
     auth: InitialStateAuthType
+    logout: () => void
 }
 
 /*---Отображаем шапку сайта, в которой есть - логотип и данные о пользователе, если мы авторизованы, то покажем данные этого пользователя
@@ -23,9 +24,9 @@ const Header = (props: HeaderPropsType) => {
 {/*---Если не авторизованы - покажем ссылку на логин, если авторизованы - отобразим данные пользователя и его аватар---*/}
                     {
                         props.auth.isAuth ?
-                            <div className={style.loginContainer}> <b>{props.auth.login}</b>
-                                &{props.auth.profile?.userId}
-                                {props.auth.profile?.photos.small ? <img src={props.auth.profile.photos.small} alt="photo"/> : <img src={userLogo} alt="photo"/>}
+                            <div className={style.loginContainer}> <b>{props.auth.login}</b> & {props.auth.profile?.userId}
+                                {props.auth.profile?.photos.small ? <img src={props.auth.profile.photos.small} alt="photo"/> : <img src={userLogo} alt="photo"/> }
+                                <button onClick={props.logout}>logout</button>
                             </div>
                                 : <NavLink to='/login'>Login</NavLink>
                     }

@@ -11,8 +11,8 @@ const App = () => {
       <BrowserRouter>
           <div className="WrapperApp">
             <HeaderContainer />
-            <SideBarContainer />
-            <Main />
+                <SideBarContainer />
+                <Main />
           </div>
       </BrowserRouter>
   )

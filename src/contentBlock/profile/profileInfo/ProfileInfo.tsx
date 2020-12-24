@@ -2,7 +2,7 @@ import React from 'react';
 import styles from "./profileInfo.module.css";
 import {ProfileObject} from "../../../redux/profileReducer";
 import {Preloader} from "../../../common/preloader/Preloader";
-import logoAvatar from "../../../assets/image/userPhoto.png";
+import logoAvatar from "../../../assets/image/avatar.png";
 import {DescriptionStatus} from "./status/Status";
 
 /*---Типизация компоненты - ProfileInfo---*/

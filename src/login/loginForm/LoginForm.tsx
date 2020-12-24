@@ -12,14 +12,14 @@ export type FormDataType = {
 }
 
 /*---Функция-валидатор, контролирующий количество допустимых символов в поле---*/
-const lengthField = maxLength(15);
+const maxLengthField = maxLength(30);
 
 
 /*---Форма логинизации---*/
 const LoginForm: React.FC<InjectedFormProps<FormDataType>> = (props) => {
     return <form onSubmit={props.handleSubmit} className={styles.form} >
-        <Field type="text" component={Input} name={'email'} validate={[required, lengthField]} />
-        <Field type="password" component={Input} name={'password'} validate={[required, lengthField]} />
+        <Field type="text" component={Input} name={'email'} validate={[required, maxLengthField]} />
+        <Field type="password" component={Input} name={'password'} validate={[required, maxLengthField]} />
         <div>
             <Field type="checkbox" component={Input} name={'rememberMe'} /> remember me
         </div>

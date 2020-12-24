@@ -10,6 +10,7 @@ import {
 import {withRouter, RouteComponentProps, Redirect} from 'react-router';
 import Profile from "./Profile";
 import { compose } from 'redux';
+import {withAuthRedirect} from "../../hoc/withAuthRedirect";
 
 
 /*---Типизация передаваемых */
@@ -80,5 +81,6 @@ function mapStateToProps(state: AppStateType) {
 
 export default compose<any>(
     connect<MapStateToPropsType, MapDispatchToProps, {}, AppStateType>(mapStateToProps, {getUserProfile: getUserProfileTC, getStatusUser: getStatusUserTC, updateStatusUser: updateStatusUserTC}),
+    withAuthRedirect,
     withRouter
 )(ProfileContainer);

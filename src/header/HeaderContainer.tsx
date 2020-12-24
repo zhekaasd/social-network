@@ -1,7 +1,7 @@
 import React from 'react';
 import Header from "./Header";
 import axios from "axios";
-import {authMeTC, InitialStateAuthType, setAuthUserProfile, setUserData} from "../redux/auth-reducer";
+import {authMeTC, InitialStateAuthType, logoutTC, setAuthUserProfile, setUserData} from "../redux/auth-reducer";
 import {AppStateType} from "../redux/redux-store";
 import {connect} from "react-redux";
 import {ProfileObject} from "../redux/profileReducer";
@@ -12,6 +12,7 @@ import {usersAPI, usersAuth} from "../api/api";
 interface IHeaderContainer {
     authMe: () => void
     auth: InitialStateAuthType
+    logout: () => void
 }
 
 /*---Типизация пропсов передаваемых в компоненту - HeaderContainer---*/
@@ -22,6 +23,7 @@ type MapStatePropsType = {
 /*---Типизация колбеков передаваемых в компоненту - HeaderContainer---*/
 type MapDispatchPropsType = {
     authMe: () => void
+    logout: () => void
 };
 
 
@@ -45,5 +47,6 @@ function mapStateToProps(state: AppStateType) {
 }
 
 export default connect<MapStatePropsType, MapDispatchPropsType, {}, AppStateType>(mapStateToProps, {
-    authMe: authMeTC
+    authMe: authMeTC,
+    logout: logoutTC
 })(HeaderContainer);
