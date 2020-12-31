@@ -16,12 +16,14 @@ import {withAuthRedirect} from "../../hoc/withAuthRedirect";
 /*---Типизация передаваемых */
 type ParamsType = {
     userId: string
+    authorizedUserId: string
 }
 
 /*---Типизация пропсов передаваемых в компоненту - ProfileContainer---*/
 type MapStateToPropsType = {
     profile: ProfileObject | null
     status: string
+    authorizedUserId: string | null
 }
 
 /*---Типизация колбеков передаваемых в компоненту - ProfileContainer---*/
@@ -45,7 +47,10 @@ class ProfileContainer extends React.Component<PropsTypes, {}> {
     componentDidMount() {
         let userId = this.props.match.params.userId;
         if (!userId) {
-            userId = '9008';
+            userId = String(Number(this.props.authorizedUserId));
+            if (!userId) {
+                this.props.history.push('/login');
+            }
         }
         this.props.getUserProfile(userId);
         this.props.getStatusUser(userId);
@@ -62,10 +67,11 @@ class ProfileContainer extends React.Component<PropsTypes, {}> {
 }
 
 /*---Прокидываем через пропсы в компоненту нужную нам часть данных из стейта---*/
-function mapStateToProps(state: AppStateType) {
+const mapStateToProps = (state: AppStateType): MapStateToPropsType => {
     return {
         profile: state.profilePage.profile,
-        status: state.profilePage.status
+        status: state.profilePage.status,
+        authorizedUserId: state.auth.userId
     }
 }
 
