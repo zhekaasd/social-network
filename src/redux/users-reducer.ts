@@ -176,7 +176,7 @@ export const toggleIsFollowingProgress = (isFetching: boolean, userId: number | 
 
 /*---Санка, делающая запрос за списком пользователей, и диспатчащая количество общих пользователей, самих пользователей и информацию
 о них---*/
-export const getUsersTC = (currentPage: number, pageSize: number) => (dispatch: Dispatch<UsersActionType>) => {
+export const requestUsersTC = (currentPage: number, pageSize: number) => (dispatch: Dispatch<UsersActionType>) => {
     dispatch(toggleIsFetching(true));
     usersAPI.getUsers(currentPage, pageSize)
         .then( (response) => {

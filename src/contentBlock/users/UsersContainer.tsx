@@ -3,7 +3,7 @@ import {connect} from "react-redux";
 import {AppStateType} from "../../redux/redux-store";
 import {
     followTC,
-    getUsersTC,
+    requestUsersTC,
     InitialStateUsersItemType,
     setCurrentPage,
     toggleIsFollowingProgress,
@@ -13,6 +13,14 @@ import Users from "./Users";
 import {Preloader} from "../../common/preloader/Preloader";
 import {withAuthRedirect} from "../../hoc/withAuthRedirect";
 import {compose} from "redux";
+import {
+    getCurrentPage,
+    getFollowingInProgress, getIsAuth,
+    getIsFetching,
+    getPageSize,
+    getTotalUsersCount,
+    getUsers
+} from "../../redux/users-selectors";
 
 
 /*---Типизация пропсов передаваемых в компоненту - UsersContainer---*/
@@ -39,13 +47,13 @@ type MapDispatchToPropsType = {
 /*---Достаем нужную для компоненты часть данных из глобального стора---*/
 let mapStateToProps = (state: AppStateType) => {
     return {
-        users: state.users.users,
-        pageSize: state.users.pageSize,
-        totalUsersCount: state.users.totalUsersCount,
-        currentPage: state.users.currentPage,
-        isFetching: state.users.isFetching,
-        followingInProgress: state.users.followingInProgress,
-        isAuth: state.auth.isAuth
+        users: getUsers(state),
+        pageSize: getPageSize(state),
+        totalUsersCount: getTotalUsersCount(state),
+        currentPage: getCurrentPage(state),
+        isFetching: getIsFetching(state),
+        followingInProgress: getFollowingInProgress(state),
+        isAuth: getIsAuth(state)
     }
 }
 
@@ -121,7 +129,7 @@ export default compose<any>(
         unfollow: unfollowTC,
         setCurrentPage,
         toggleIsFollowingProgress,
-        getUsers: getUsersTC
+        getUsers: requestUsersTC
     }),
     withAuthRedirect
 )(UsersContainer);
