@@ -7,7 +7,7 @@ interface IDescriptionStatus {
 }
 
 /*---Комопнента отображения статуса с переключением в режим редактирования и обратно---*/
-export class DescriptionStatus extends React.Component<IDescriptionStatus, any> {
+class DescriptionStatus extends React.Component<IDescriptionStatus, any> {
 
 /*---Локальный стейт управлением отображения статуса---*/
     state = {
@@ -37,7 +37,8 @@ export class DescriptionStatus extends React.Component<IDescriptionStatus, any> 
         })
     }
 
-/*---Метод жизненного цикла компоненты, который следит за обновлением компоненты, и если значение изменяется, компонента перерисовывается---*/
+/*---Метод жизненного цикла компоненты, который следит за обновлением компоненты, и если значение изменяется, компонента перерисовывается,
+также отвечает за синхронизацию данных из пропсов с данными с сервера---*/
     componentDidUpdate(prevProps: Readonly<IDescriptionStatus>, prevState: Readonly<any>, snapshot?: any) {
         if (prevProps.status !== this.props.status) {
             this.setState({

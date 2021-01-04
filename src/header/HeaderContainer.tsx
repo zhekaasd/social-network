@@ -1,52 +1,42 @@
 import React from 'react';
 import Header from "./Header";
-import axios from "axios";
-import {authMeTC, InitialStateAuthType, logoutTC, setAuthUserProfile, setUserData} from "../redux/auth-reducer";
+import {InitialStateAuthType, logoutTC} from "../redux/auth-reducer";
 import {AppStateType} from "../redux/redux-store";
 import {connect} from "react-redux";
-import {ProfileObject} from "../redux/profileReducer";
-import {usersAPI, usersAuth} from "../api/api";
+import {getAuthData} from '../redux/auth-selectors';
 
 
 /*---Типизация классовой компоненты---*/
 interface IHeaderContainer {
-    authMe: () => void
-    auth: InitialStateAuthType
+    authData: InitialStateAuthType
     logout: () => void
 }
 
 /*---Типизация пропсов передаваемых в компоненту - HeaderContainer---*/
 type MapStatePropsType = {
-    auth: InitialStateAuthType
+    authData: InitialStateAuthType
 };
 
 /*---Типизация колбеков передаваемых в компоненту - HeaderContainer---*/
 type MapDispatchPropsType = {
-    authMe: () => void
     logout: () => void
 };
 
 
+
+
 class HeaderContainer extends React.Component<IHeaderContainer, {}> {
 
-/*---Метод жизненного цикла, который сообщает, что компонента была создана/вмонтирована---*/
-    componentDidMount() {
-        this.props.authMe();
-    }
-
     render() {
-        return <Header {...this.props} auth={this.props.auth} />
+        return <Header {...this.props} authData={this.props.authData} />
     }
 }
 
 /*---Прокидываем через пропсы в компоненту нужную нам часть данных из стейта---*/
 function mapStateToProps(state: AppStateType) {
     return {
-        auth: state.auth
+        authData: getAuthData(state)
     }
 }
 
-export default connect<MapStatePropsType, MapDispatchPropsType, {}, AppStateType>(mapStateToProps, {
-    authMe: authMeTC,
-    logout: logoutTC
-})(HeaderContainer);
+export default connect<MapStatePropsType, MapDispatchPropsType, {}, AppStateType>(mapStateToProps, {logout: logoutTC})(HeaderContainer);

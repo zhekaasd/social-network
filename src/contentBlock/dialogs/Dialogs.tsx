@@ -13,7 +13,7 @@ type DialogsPropsType = {
     // name: string
     // message: string
     addNewMessage: (addMessage: string) => void
-    messagesPage: InitialStateDialogsType
+    dialogsData: InitialStateDialogsType
 }
 
 
@@ -21,11 +21,11 @@ type DialogsPropsType = {
 const Dialogs = (props: DialogsPropsType) => {
 
 /*---Достаем нужную часть данных из нашего стора---*/
-    let state = props.messagesPage;
+    let state = props.dialogsData;
 /*---Достаем из стейта массив с диалогами, проходимся по нему, и отображаем диалог с конкретным пользователем, по id---*/
-    let dialogItem = state.dialogDate.map( dialog =>  <DialogUser key={dialog.id} name={dialog.name} id={dialog.id} />  );
+    let dialogItem = state.dialogData.map(dialog =>  <DialogUser key={dialog.id} name={dialog.name} id={dialog.id} />  );
 /*---Достаем из стейта массив с сообщениями, проходимся по нему, и отображаем сообщения из диалога с конкретным пользователем---*/
-    let messageItem = state.messageDate.map( message => <Messages message={message.message} />);
+    let messageItem = state.messageData.map(message => <Messages message={message.message} />);
 
 
 

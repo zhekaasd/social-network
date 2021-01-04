@@ -131,5 +131,5 @@ export default compose<any>(
         toggleIsFollowingProgress,
         getUsers: requestUsersTC
     }),
-    withAuthRedirect
+    //withAuthRedirect
 )(UsersContainer);

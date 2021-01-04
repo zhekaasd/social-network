@@ -68,14 +68,14 @@ export const setAuthUserProfile = (profile: ProfileObject) => {
 }
 
 /*---Типизация санки с запросом на авторизацию---*/
-type ThunkType = ThunkAction<void, AppStateType, unknown, ActionsType>;
+type ThunkType = ThunkAction<Promise<void>, AppStateType, unknown, ActionsType>;
 
 
 /*---Санка, делающая запрос на сервер, за авторизацией, если ответ положительный, то делается ещё один запрос,
 за данными авторизованного пользователя, и диспатч этих данных в стейт. Если запрос завершился неудачей, то, пока что,
 ничего в ответе ничего не придёт---*/
-export const authMeTC = (): ThunkType => (dispatch: ThunkDispatch<AppStateType, unknown, ActionsType>) => {
-    usersAuth.authMe()
+export const authMeTC = (): ThunkType => (dispatch) => {
+     return usersAuth.authMe()
         .then( (response) => {
             if (response.data.resultCode === 0) {
                 let {id, login, email} = response.data.data;

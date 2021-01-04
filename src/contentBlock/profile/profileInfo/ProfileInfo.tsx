@@ -3,7 +3,7 @@ import styles from "./profileInfo.module.css";
 import {ProfileObject} from "../../../redux/profileReducer";
 import {Preloader} from "../../../common/preloader/Preloader";
 import logoAvatar from "../../../assets/image/avatar.png";
-import {DescriptionStatus} from "./status/Status";
+import {DescriptionStatusWithHooks} from "./status/DescriptionStatusWithHooks";
 
 /*---Типизация компоненты - ProfileInfo---*/
 type ProfileInfoPropsType = {
@@ -47,7 +47,7 @@ const ProfileInfo = (props: ProfileInfoPropsType) => {
     {/*---Статус---*/}
                 <div className={styles.status}>
                     <span className={styles.descriptionTitleInfo}>Status: </span>
-                    <DescriptionStatus status={props.status} updateStatusUser={props.updateStatusUser} />
+                    <DescriptionStatusWithHooks status={props.status} updateStatusUser={props.updateStatusUser} />
                 </div>
     {/*---Основные данные о пользователе---*/}
                 <div className={styles.information}>

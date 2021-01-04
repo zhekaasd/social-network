@@ -5,8 +5,8 @@ const ADD_NEW_MESSAGE = 'ADD-NEW-MESSAGE';
 
 /*---Типизация иницилизационного стейта---*/
 export type InitialStateDialogsType = {
-    messageDate: Array<InitialMessageDateType>
-    dialogDate: Array<InitialDialogDateType>
+    messageData: Array<InitialMessageDateType>
+    dialogData: Array<InitialDialogDateType>
 }
 
 
@@ -28,12 +28,12 @@ export type DialogsActionType = AddNewMessageActionType;
 
 /*---Иницилизационный стейт с начальными данными---*/
 let initialState: InitialStateDialogsType = {
-    messageDate: [
+    messageData: [
         {message: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Laborum, voluptate!'},
         {message: 'consectetur adipisicing elit'},
         {message: 'Laborum, voluptate!'}
     ],
-    dialogDate: [
+    dialogData: [
         {id: '1', name: 'Vasya'},
         {id: '2', name: 'Manya'},
         {id: '3', name: 'Katya'},
@@ -49,7 +49,7 @@ const dialogsReducer = (state = initialState, action: DialogsActionType): Initia
             /*---Добавляем в уже имеющийся массив сообщений, новое сообщение---*/
             return  {
                 ...state,
-                messageDate: [...state.messageDate, {message: action.addMessage}]
+                messageData: [...state.messageData, {message: action.addMessage}]
             };
 
         default:

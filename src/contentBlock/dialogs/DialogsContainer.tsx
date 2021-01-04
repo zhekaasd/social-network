@@ -12,7 +12,7 @@ import {withAuthRedirect} from "../../hoc/withAuthRedirect";
 
 /*---Типизация пропсов передаваемых в компоненту - Dialogs---*/
 type MapStatePropsType = {
-    messagesPage: InitialStateDialogsType
+    dialogsData: InitialStateDialogsType
 }
 
 /*---Типизация колбеков передаваемых в компоненту - Dialogs---*/
@@ -23,7 +23,7 @@ type MapDispatchPropsType = {
 /*---Прокидываем через пропсы в компоненту нужную нам часть данных из стейта---*/
 let mapStateToProps = (state: AppStateType): MapStatePropsType => {
     return {
-        messagesPage: state.messagesPage
+        dialogsData: state.dialogsPage
     }
 }
 
