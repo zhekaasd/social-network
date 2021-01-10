@@ -7,7 +7,7 @@ import {authMeTC} from "./auth-reducer";
 const INITIALIZED_SUCCESS = 'INITIALIZED_SUCCESS';
 
 /*---Типизация иницилизационного стейта---*/
-type InitialStateType = {
+export type InitialStateType = {
     initialized: boolean
 }
 
@@ -38,7 +38,7 @@ type AppReducerActionsType = InitializedSuccessACType;
 type InitializedSuccessACType = ReturnType<typeof initializedSuccessAC>;
 
 /*---Экшенкрейтор запрашивающий проверку авторизации пользователя---*/
-const initializedSuccessAC = () => {
+export const initializedSuccessAC = () => {
     return {type: INITIALIZED_SUCCESS} as const
 }
 

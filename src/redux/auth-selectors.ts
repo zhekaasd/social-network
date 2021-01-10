@@ -6,3 +6,8 @@ import {InitialStateAuthType} from "./auth-reducer";
 export const getAuthData = (state: AppStateType): InitialStateAuthType => {
     return state.auth;
 }
+
+/*---Селектор, который "достает" 'id' авторизованного пользователя---*/
+export const getAuthorizedUserId = (state: AppStateType) => {
+    return state.auth.userId;
+}

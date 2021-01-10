@@ -1,4 +1,4 @@
-import {ProfileObject} from "./profileReducer";
+import {ProfileObject} from "./profile-reducer";
 import {usersAPI, usersAuth} from "../api/api";
 import {ThunkAction, ThunkDispatch} from "redux-thunk";
 import {AppStateType} from "./redux-store";

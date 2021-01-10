@@ -4,6 +4,7 @@ import {connect} from "react-redux";
 import {AppStateType} from "../redux/redux-store";
 import {loginTC} from "../redux/auth-reducer";
 import {Redirect} from "react-router";
+import {getIsAuth} from "../redux/users-selectors";
 
 
 /*---Типизация входящих пропсов для компоненты - Login---*/
@@ -49,7 +50,7 @@ type mapStateToProps = {
 /*---Прокидываем через пропсы в компоненту нужную нам часть данных из стейта---*/
 const mapStateToProps = (state: AppStateType) => {
     return {
-        isAuth: state.auth.isAuth
+        isAuth: getIsAuth(state)
     }
 }
 

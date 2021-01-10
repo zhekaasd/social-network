@@ -1,7 +1,7 @@
 import React from 'react';
 import ProfileInfo from "./profileInfo/ProfileInfo";
 import {PostsContainer} from "./posts/PostsContainer";
-import {ProfileObject} from "../../redux/profileReducer";
+import {ProfileObject} from "../../redux/profile-reducer";
 import styles from "./profile.module.css";
 
 /*---Типизация компоненты - Profile---*/

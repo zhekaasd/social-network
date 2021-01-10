@@ -1,6 +1,6 @@
 import React from "react";
 import styles from "./../profile.module.css";
-import {InitialStatePostDateType} from "../../../redux/profileReducer";
+import {InitialStatePostDateType} from "../../../redux/profile-reducer";
 import Post from "./post/Post";
 import {reduxForm, Field, InjectedFormProps} from "redux-form";
 import {maxLength, required} from "../../../utils/validators";
@@ -12,7 +12,7 @@ type PostsPropsType = {
 }
 
 
-const Posts = (props: PostsPropsType) => {
+const Posts = React.memo ((props: PostsPropsType) => {
 /*---Проходим по массиву постов из стейта и передаем в компоненту сами посты, а также информацию о лайках для постов---*/
     let postsElements = props.postDate.map(post => <Post message={post.messagePost} likeCount={post.likeCount}/>);
 
@@ -33,7 +33,7 @@ const Posts = (props: PostsPropsType) => {
             </div>
         </div>
     )
-}
+});
 
 export default Posts;
 

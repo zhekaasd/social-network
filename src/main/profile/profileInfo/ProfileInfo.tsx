@@ -1,9 +1,10 @@
 import React from 'react';
 import styles from "./profileInfo.module.css";
-import {ProfileObject} from "../../../redux/profileReducer";
+import {ProfileObject} from "../../../redux/profile-reducer";
 import {Preloader} from "../../../common/preloader/Preloader";
 import logoAvatar from "../../../assets/image/avatar.png";
 import {DescriptionStatusWithHooks} from "./status/DescriptionStatusWithHooks";
+import {Redirect} from "react-router";
 
 /*---Типизация компоненты - ProfileInfo---*/
 type ProfileInfoPropsType = {

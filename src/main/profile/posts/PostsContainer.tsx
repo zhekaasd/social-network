@@ -5,7 +5,7 @@ import {
     InitialStatePostDateType,
     addPostActionCreator,
     ProfileActionType
-} from "../../../redux/profileReducer";
+} from "../../../redux/profile-reducer";
 import {Dispatch} from "redux";
 
 
@@ -23,7 +23,7 @@ type MapDispatchToPropsType = {
 /*---Прокидываем через пропсы в компоненту нужную нам часть данных из стейта---*/
 let mapStateToProps = (state: AppStateType): MapStateToPropsType => {
     return {
-        postDate: state.profilePage.postDate
+        postDate: state.profilePage.postData
     }
 }
 

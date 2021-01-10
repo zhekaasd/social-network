@@ -3,7 +3,7 @@ import "./App.css"
 import {BrowserRouter} from "react-router-dom";
 import {SideBarContainer} from "./sidebar/SidebarContainer";
 import HeaderContainer from "./header/HeaderContainer";
-import Main from "./contentBlock/Main";
+import Main from "./main/Main";
 
 
 const App = () => {

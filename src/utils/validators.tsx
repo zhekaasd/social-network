@@ -6,7 +6,7 @@ export const required = (value: any) => {
         return undefined;
     }
 
-    return 'Error message';
+    return 'Field is required!';
 }
 
 /*---Санка, которая принимает в параметры максимальное число значений, сравнимает его с количеством символов, взятых из данных полей формы,

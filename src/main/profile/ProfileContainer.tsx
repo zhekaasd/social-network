@@ -6,11 +6,14 @@ import {
     getUserProfileTC,
     ProfileObject,
     updateStatusUserTC
-} from "../../redux/profileReducer";
+} from "../../redux/profile-reducer";
 import {withRouter, RouteComponentProps, Redirect} from 'react-router';
 import Profile from "./Profile";
 import { compose } from 'redux';
 import {withAuthRedirect} from "../../hoc/withAuthRedirect";
+import {Preloader} from "../../common/preloader/Preloader";
+import {getProfile, getStatus} from "../../redux/profile-selector";
+import {getAuthorizedUserId} from "../../redux/auth-selectors";
 
 
 /*---Типизация передаваемых */
@@ -56,7 +59,10 @@ class ProfileContainer extends React.Component<PropsTypes, {}> {
         this.props.getStatusUser(userId);
     }
 
+
+
     render() {
+
 /*---Прокидываем через пропсы данные дальше по компоненте---*/
         return (
             <div>
@@ -69,9 +75,9 @@ class ProfileContainer extends React.Component<PropsTypes, {}> {
 /*---Прокидываем через пропсы в компоненту нужную нам часть данных из стейта---*/
 const mapStateToProps = (state: AppStateType): MapStateToPropsType => {
     return {
-        profile: state.profilePage.profile,
-        status: state.profilePage.status,
-        authorizedUserId: state.auth.userId
+        profile: getProfile(state),
+        status: getStatus(state),
+        authorizedUserId: getAuthorizedUserId(state)
     }
 }
 
@@ -87,6 +93,6 @@ const mapStateToProps = (state: AppStateType): MapStateToPropsType => {
 
 export default compose<any>(
     connect<MapStateToPropsType, MapDispatchToProps, {}, AppStateType>(mapStateToProps, {getUserProfile: getUserProfileTC, getStatusUser: getStatusUserTC, updateStatusUser: updateStatusUserTC}),
-    //withAuthRedirect,
+    withAuthRedirect,
     withRouter
 )(ProfileContainer);

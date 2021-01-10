@@ -5,6 +5,7 @@ import {profileAPI, usersAPI} from "../api/api";
 const ADD_POST = 'ADD_POST';
 const SET_USER_PROFILE = 'SET-USER-PROFILE';
 const SET_STATUS_USER = 'SET-STATUS-USER';
+const DELETE_POST = 'social-network/profile-reducer/DELETE_POST';
 
 
 /*---Типизация подобъекта 'photos', иницилизационного объекта---*/
@@ -44,15 +45,15 @@ export type ProfileObject = {
 }
 
 /*---Типизация иницилизационного стейта---*/
-type InitialStatePostPageType = {
-    postDate: Array<InitialStatePostDateType>
+export type InitialStatePostPageType = {
+    postData: Array<InitialStatePostDateType>
     profile: ProfileObject | null
     status: string
 }
 
 /*---Иницилизационный стейт с начальными данными---*/
 let initialState: InitialStatePostPageType = {
-    postDate: [
+    postData: [
         {
             id: 1,
             messagePost: 'Lorem ipsum dolor sit amet, consectetur. Lorem ipsum dolor sit amet, consectetur. ',
@@ -83,7 +84,7 @@ let initialState: InitialStatePostPageType = {
 
 /*---Типизация всех использумых экшенов в редьюсере---*/
 export type ProfileActionType = AddPostActionType |
-    SetUserProfileActionType | SetStatusUserType;
+    SetUserProfileActionType | SetStatusUserType | DeletePostType;
 
 
 const profileReducer = (state:InitialStatePostPageType = initialState, action: ProfileActionType): InitialStatePostPageType => {
@@ -93,8 +94,15 @@ const profileReducer = (state:InitialStatePostPageType = initialState, action: P
             зануляем текст в нашем стейте, который хранит текущее сообщение---*/
             return {
                 ...state,
-                postDate: [{id: 14, messagePost: action.newPostText, likeCount: '0'}, ...state.postDate]
+                postData: [{id: 14, messagePost: action.newPostText, likeCount: '0'}, ...state.postData]
             }
+
+        case DELETE_POST: {
+            return {
+                ...state,
+                postData: state.postData.filter(p => p.id !== action.id)
+            }
+        }
 
         case SET_USER_PROFILE:
             /*---Сохраняем в стейт данные профиля конкретного пользователя---*/
@@ -118,6 +126,12 @@ type SetStatusUserType = {
     status: string
 }
 
+/*---Типизация экшен крейтора, который удаляет пост---*/
+type DeletePostType = {
+    type: typeof DELETE_POST
+    id: number
+}
+
 /*---Типизация экшен крейтора с добавлением нового поста в стейт---*/
 type AddPostActionType = {
     type: typeof ADD_POST
@@ -133,9 +147,13 @@ type SetUserProfileActionType = {
 
 
 
+
+
 /*---Экшен крейтор, добавления нового поста в стейт---*/
 export const addPostActionCreator = (newPostText: string): AddPostActionType => {return {type: ADD_POST, newPostText: newPostText}};
 
+/*---Экшен крейтор, добавления нового поста в стейт---*/
+export const deletePostAC = (id: number) => { return {type: DELETE_POST, id: id} as const };
 
 /*---Экшен крейтор, возвращающий данные о текущем пользователе---*/
 export const setUserProfileAC = (profile: ProfileObject) => {

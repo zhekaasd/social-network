@@ -11,7 +11,7 @@ import {AppStateType} from "../redux/redux-store";
 import {initializeAppTC} from "../redux/app-reducer";
 import {Preloader} from "../common/preloader/Preloader";
 
-/*---Типизация входящих пропсов компоненты - Main---*/
+/*---Типизация входящих пропсов компоненты - main---*/
 interface IMain {
     initialized: boolean
     initializeApp: () => void
@@ -42,12 +42,12 @@ class Main extends React.Component<IMain, {}> {
     }
 }
 
-/*---Типизация пропсов передаваемых в компоненту - Main---*/
+/*---Типизация пропсов передаваемых в компоненту - main---*/
 type MapStateToPropsType = {
     initialized: boolean
 }
 
-/*---Типизация колбеков передаваемых в компоненту - Main---*/
+/*---Типизация колбеков передаваемых в компоненту - main---*/
 type MapDispatchToPropsType = {
     initializeApp: () => void
 }
