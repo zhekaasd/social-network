@@ -4,6 +4,7 @@ import {InitialStatePostDateType} from "../../../redux/profile-reducer";
 import Post from "./post/Post";
 import {reduxForm, Field, InjectedFormProps} from "redux-form";
 import {maxLength, required} from "../../../utils/validators";
+import {creatorField, Textarea} from "../../../common/FormControl/FormControl";
 
 /*---Типизация входящих пропсов для компоненты - Posts---*/
 type PostsPropsType = {
@@ -52,7 +53,8 @@ const lengthMessage = maxLength(15);
 const PostForm: React.FC<InjectedFormProps<FormDataPostType>> = (props) => {
     return <form onSubmit={props.handleSubmit}>
         {/*---Специальная компонента из библиотеки redux-form, которая принивает в качестве элемента, нашу ---*/}
-        <Field name={'addPostField'} component={'textarea'} validate={[required, lengthMessage]} />
+        {/*<Field name={'addPostField'} component={'textarea'} validate={[required, lengthMessage]} />*/}
+        {creatorField(Textarea, 'addPostField', [required, lengthMessage], '', {}, 'Your message post...')}
         <div>
             <button>add post</button>
         </div>

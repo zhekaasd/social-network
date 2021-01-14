@@ -5,7 +5,7 @@ import {InitialStateDialogsType} from "../../redux/dialogs-reducer";
 import styles from "./dialogs.module.css";
 import {Field, InjectedFormProps, reduxForm} from "redux-form";
 import {maxLength, required} from "../../utils/validators";
-import {Textarea} from "../../common/FormControl/FormControl";
+import {creatorField, Textarea} from "../../common/FormControl/FormControl";
 
 /*---Типизация входящих пропсов для компоненты - Dialogs---*/
 type DialogsPropsType = {
@@ -63,7 +63,8 @@ const lengthMessage = maxLength(15);
 const AddMessageDialogForm: React.FC<InjectedFormProps<DataAddMessageDialogFormType>> = (props) => {
     return <form onSubmit={props.handleSubmit}>
         {/*---Специальная компонента из библиотеки redux-form, которая самостоятельно контролирует все манипуляции с элементом, и общается со стейтом---*/}
-        <Field component={Textarea} name={'addDialogMessage'} validate={[required, lengthMessage]} />
+        {/*<Field component={Textarea} name={'addDialogMessage'} validate={[required, lengthMessage]} />*/}
+        {creatorField(Textarea, 'addDialogMessage', [required, lengthMessage], '', {}, 'Your message...')}
         <div>
             <button>add</button>
         </div>

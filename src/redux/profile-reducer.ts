@@ -2,10 +2,10 @@ import {Dispatch} from "redux";
 import {profileAPI, usersAPI} from "../api/api";
 
 /*---Константы для экшена---*/
-const ADD_POST = 'ADD_POST';
-const SET_USER_PROFILE = 'SET-USER-PROFILE';
-const SET_STATUS_USER = 'SET-STATUS-USER';
-const DELETE_POST = 'social-network/profile-reducer/DELETE_POST';
+const ADD_POST = 'sn/profile-reducer/ADD_POST';
+const SET_USER_PROFILE = 'sn/profile-reducer/SET-USER-PROFILE';
+const SET_STATUS_USER = 'sn/profile-reducer/SET-STATUS-USER';
+const DELETE_POST = 'sn/profile-reducer/DELETE_POST';
 
 
 /*---Типизация подобъекта 'photos', иницилизационного объекта---*/
@@ -167,30 +167,24 @@ export const setStatusUserAC = (status: string): SetStatusUserType => {
 
 
 /*---Санка, делает запрос на сервер за информацией о текущем пользователе и диспатчим эту информацию в стейт---*/
-export const getUserProfileTC = (userId: string) => (dispatch: Dispatch<ProfileActionType>) => {
-    usersAPI.getUserProfile(userId)
-        .then( (response) => {
+export const getUserProfileTC = (userId: string) => async (dispatch: Dispatch<ProfileActionType>) => {
+    let response = await usersAPI.getUserProfile(userId)
             dispatch(setUserProfileAC(response.data))
-        })
 }
 
 /*---Санка, делает запрос на сервер за статусом текущего пользователя и диспатчим эту информацию в стейт---*/
-export const getStatusUserTC = (userId: string) => (dispatch: Dispatch) => {
-    profileAPI.getStatusUser(userId)
-        .then((response) => {
+export const getStatusUserTC = (userId: string) => async (dispatch: Dispatch) => {
+    let response = await profileAPI.getStatusUser(userId)
             dispatch(setStatusUserAC(response.data))
-        })
 }
 
 /*---Санка, делает запрос на сервер за обновлением введенного сообщения статуса и его изменением,
 и диспатч этих измениний в стейт---*/
-export const updateStatusUserTC = (status: string) => (dispatch: Dispatch) => {
-    profileAPI.updateStatusUser(status)
-        .then((response) => {
+export const updateStatusUserTC = (status: string) => async (dispatch: Dispatch) => {
+    let response = await profileAPI.updateStatusUser(status)
             if (response.data.resultCode === 0) {
                 dispatch(setStatusUserAC(status));
             }
-        })
 }
 
 

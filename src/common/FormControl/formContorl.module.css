@@ -3,12 +3,12 @@
     border: 4px solid red;
 }
 
-.error {
+.errorWhat {
     color: red;
 }
 
 .formControl.commonError {
     padding: 5px;
-    border: 1px solid black;
+    border: 1px solid red;
     color: indigo;
 }

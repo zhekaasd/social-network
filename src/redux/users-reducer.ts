@@ -1,14 +1,15 @@
 import {Dispatch} from "redux";
 import {usersAPI} from "../api/api";
+import {updateObjectInArray} from "../utils/objects-helper";
 
 /*---Константы для экшена---*/
-const FOLLOW_USER = 'FOLLOW-USER';
-const UNFOLLOW_USER = 'UNFOLLOW-USER';
-const SET_USERS = 'SET-USERS';
-const SET_CURRENT_PAGE = 'SET-CURRENT-PAGE';
-const SET_USERS_TOTAL_COUNT = 'SET-USERS-TOTAL-COUNT';
-const TOGGLE_IS_FETCHING = 'TOGGLE-IS-FETCHING';
-const TOGGLE_IS_FOLLOWING_PROGRESS = 'TOGGLE-IS-FOLLOWING-PROGRESS';
+const FOLLOW_USER = 'sn/users-reducer/FOLLOW-USER';
+const UNFOLLOW_USER = 'sn/users-reducer/UNFOLLOW-USER';
+const SET_USERS = 'sn/users-reducer/SET-USERS';
+const SET_CURRENT_PAGE = 'sn/users-reducer/SET-CURRENT-PAGE';
+const SET_USERS_TOTAL_COUNT = 'sn/users-reducer/SET-USERS-TOTAL-COUNT';
+const TOGGLE_IS_FETCHING = 'sn/users-reducer/TOGGLE-IS-FETCHING';
+const TOGGLE_IS_FOLLOWING_PROGRESS = 'sn/users-reducer/TOGGLE-IS-FOLLOWING-PROGRESS';
 
 /*---Типизация подобъекта 'photos', иницилизационного объекта 'users'---*/
 type InitialStateUsersItemPhotoType = {
@@ -56,22 +57,12 @@ const usersReducer = (state: InitialStateUsersType = initialState, action: Users
         case FOLLOW_USER:
             return {
                 ...state,
-                users: state.users.map(u => {
-                    if (u.id === action.userId) {
-                        return {...u, followed: true}
-                    }
-                    return u;
-                })
+                users: updateObjectInArray(state.users, action.userId, {followed: true}, 'id')
             }
         case UNFOLLOW_USER:
             return {
                 ...state,
-                users: state.users.map(u => {
-                    if (u.id === action.userId) {
-                        return {...u, followed: false}
-                    }
-                    return u;
-                })
+                users: updateObjectInArray(state.users, action.userId, {followed: false}, 'id')
             }
 
         case SET_USERS:
@@ -176,40 +167,34 @@ export const toggleIsFollowingProgress = (isFetching: boolean, userId: number | 
 
 /*---Санка, делающая запрос за списком пользователей, и диспатчащая количество общих пользователей, самих пользователей и информацию
 о них---*/
-export const requestUsersTC = (currentPage: number, pageSize: number) => (dispatch: Dispatch<UsersActionType>) => {
+export const requestUsersTC = (currentPage: number, pageSize: number) => async (dispatch: Dispatch<UsersActionType>) => {
     dispatch(toggleIsFetching(true));
-    usersAPI.getUsers(currentPage, pageSize)
-        .then( (response) => {
+    let response = await usersAPI.getUsers(currentPage, pageSize);
             dispatch(toggleIsFetching(false));
             dispatch(setUsersTotalCount(response.data.totalCount))
             dispatch(setUsers(response.data.items));
-        });
 }
 
-/*---Санка, делающая запрос за подпиской на определенного пользователя, и активирующая "дизейбл" кнопки во время прогресса---*/
-export const followTC = (userId: number) => (dispatch: Dispatch<UsersActionType>) => {
+/*---Функция, которая делает запрос за отпиской\подпиской на определенного пользователя, и активирующая "дизейбл" кнопки во время прогресса подписки\отписки---*/
+const followUnfollowFlow = async (dispatch: Dispatch<UsersActionType>, userId: number, methodAPI: any, name: any) => {
     dispatch(toggleIsFollowingProgress(true, userId));
-    usersAPI.follow(userId)
-        .then( (response) => {
-            if (response.data.resultCode === 0) {
-                dispatch(follow(userId));
-            }
-            dispatch(toggleIsFollowingProgress(false, userId));
-        })
+    let response = await methodAPI(userId);
+    if (response.data.resultCode === 0) {
+        dispatch(name(userId));
+    }
+    dispatch(toggleIsFollowingProgress(false, userId));
 }
 
-/*---Санка, делающая запрос за отпиской от определенного пользователя, и активирующая "дизейбл" кнопки во время прогресса---*/
+
+/*!---Санка, которая запускает общую функцию делающую запрос за отпиской от определенного пользователя, и активирующая "дизейбл" кнопки во время прогресса---!*/
 export const unfollowTC = (userId: number) => (dispatch: Dispatch<UsersActionType>) => {
-    dispatch(toggleIsFollowingProgress(true, userId));
-    usersAPI.unfollow(userId)
-        .then( (response) => {
-            if (response.data.resultCode === 0) {
-                dispatch(unfollow(userId));
-            }
-            dispatch(toggleIsFollowingProgress(false, userId));
-        })
+    followUnfollowFlow(dispatch, userId,  usersAPI.unfollow.bind(usersAPI), unfollow);
 }
 
+/*---Санка, которая запускает общую функцию делающую запрос за подпиской на определенного пользователя, и активирующая "дизейбл" кнопки во время прогресса---*/
+export const followTC = (userId: number) => async (dispatch: Dispatch<UsersActionType>) => {
+    followUnfollowFlow(dispatch, userId, usersAPI.follow.bind(usersAPI), follow);
+}
 
 export default usersReducer;
 

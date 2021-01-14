@@ -64,7 +64,7 @@ const ProfileInfo = (props: ProfileInfoPropsType) => {
                 <div className={styles.contacts}>
                     <span className={styles.descriptionTitleInfo}>My links:</span>
                     {
-                        linkInfo.map( l => <div> <b>{l.nameLink}: </b> <i>{l.yourInfo}</i> </div>)
+                        linkInfo.map( l => <div key={l.nameLink}> <b>{l.nameLink}: </b> <i>{l.yourInfo}</i> </div>)
                     }
                 </div>
             </div>

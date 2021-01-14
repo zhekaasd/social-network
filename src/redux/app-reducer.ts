@@ -4,7 +4,7 @@ import {AppStateType} from "./redux-store";
 import {authMeTC} from "./auth-reducer";
 
 /*---Константы для экшена---*/
-const INITIALIZED_SUCCESS = 'INITIALIZED_SUCCESS';
+const INITIALIZED_SUCCESS = 'sn/app-reducer/INITIALIZED_SUCCESS';
 
 /*---Типизация иницилизационного стейта---*/
 export type InitialStateType = {
@@ -50,15 +50,13 @@ type GetStateType = () => AppStateType;
 
 
 /*---Типизация санки---*/
-type ThunkType = ThunkAction<void, AppStateType, unknown, AppReducerActionsType>
+type ThunkType = ThunkAction<Promise<void>, AppStateType, unknown, AppReducerActionsType>
 
 /*---Санка, делает запрос на сервер за авторизацией, если авторизация произойдет, то санка задиспатчит экшен
 и изменит значение, на авторизован, что отлючит защищающий Redirect---*/
 export const initializeAppTC = (): ThunkType => {
-    return (dispatch) => {
-        dispatch(authMeTC())
-            .then((resp) => {
-                dispatch(initializedSuccessAC());
-            })
+    return async (dispatch) => {
+        let resp = dispatch(authMeTC());
+        dispatch(initializedSuccessAC());
     }
 }

@@ -1,6 +1,7 @@
 import React from "react";
 import styles from "./formContorl.module.css";
-import {WrappedFieldsProps} from "redux-form";
+import {Field, WrappedFieldsProps} from "redux-form";
+import {required} from "../../utils/validators";
 
 
 
@@ -39,5 +40,12 @@ export const Input: React.FC<WrappedFieldsProps> = ({input, meta, ...props}) => 
     {/*---Если условия ошибки будут выполнены, то мы вернём текст с ошибкой---*/}
         { hasError && <span>{meta.error}</span> }
 
+    </div>
+}
+
+/*---Функция, которая создает и возвращает дивку с Field's из библиотеки редакс форм---*/
+export const creatorField = (component: any, name: string, validate: any, text: string = '', props = {}, placeholder: any = '') => {
+    return <div>
+        <Field placeholder={placeholder} type={'text'} component={component} name={name} validate={validate} {...props} /> {text}
     </div>
 }

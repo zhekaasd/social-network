@@ -8,6 +8,7 @@ import {connect} from "react-redux";
 import Dialogs from "./Dialogs";
 import {compose, Dispatch} from "redux";
 import {withAuthRedirect} from "../../hoc/withAuthRedirect";
+import {getMessagesData} from "../../redux/dialogs-selectors";
 
 
 /*---Типизация пропсов передаваемых в компоненту - Dialogs---*/
@@ -23,7 +24,7 @@ type MapDispatchPropsType = {
 /*---Прокидываем через пропсы в компоненту нужную нам часть данных из стейта---*/
 let mapStateToProps = (state: AppStateType): MapStatePropsType => {
     return {
-        dialogsData: state.dialogsPage
+        dialogsData: getMessagesData(state)
     }
 }
 

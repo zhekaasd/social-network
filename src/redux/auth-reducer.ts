@@ -2,10 +2,12 @@ import {ProfileObject} from "./profile-reducer";
 import {usersAPI, usersAuth} from "../api/api";
 import {ThunkAction, ThunkDispatch} from "redux-thunk";
 import {AppStateType} from "./redux-store";
+import {stopSubmit} from "redux-form";
+import {Dispatch} from "redux";
 
 /*---Константы для экшена---*/
-const SET_USER_DATA = "SET-USER-DATA";
-const SET_AUTH_USER_PROFILE = "SET-AUTH-USER-PROFILE";
+const SET_USER_DATA = "sn/auth-reducer/SET-USER-DATA";
+const SET_AUTH_USER_PROFILE = "sn/auth-reducer/SET-AUTH-USER-PROFILE";
 
 
 /*---Типизация иницилизационного стейта---*/
@@ -74,8 +76,8 @@ type ThunkType = ThunkAction<Promise<void>, AppStateType, unknown, ActionsType>;
 /*---Санка, делающая запрос на сервер, за авторизацией, если ответ положительный, то делается ещё один запрос,
 за данными авторизованного пользователя, и диспатч этих данных в стейт. Если запрос завершился неудачей, то, пока что,
 ничего в ответе ничего не придёт---*/
-export const authMeTC = (): ThunkType => (dispatch) => {
-     return usersAuth.authMe()
+export const authMeTC = (): ThunkType => async (dispatch) => {
+     return await usersAuth.authMe()
         .then( (response) => {
             if (response.data.resultCode === 0) {
                 let {id, login, email} = response.data.data;
@@ -92,15 +94,16 @@ export const authMeTC = (): ThunkType => (dispatch) => {
 
 
 /*---Санка, делает запрос на сервер отправляя определенные данные, чтобы залогиниться. Если данные корректные, мы выполним санку,
-которая запрашивает авторизацию и профиль авторизированного пользователя, для работы с его данными(создаем кУку)---*/
+которая запрашивает авторизацию и профиль авторизированного пользователя, для работы с его данными(создаем кУку). В противном случае,
+получим сообщение об ошибке---*/
 export const loginTC = (email: string, password: string, rememberMe: boolean) => {
-    return (dispatch: ThunkDispatch<AppStateType, unknown, ActionsType>) => {
-        usersAuth.login(email, password, rememberMe)
-            .then((response) => {
+    return async (dispatch: Dispatch<any>) => {
+        let response = await usersAuth.login(email, password, rememberMe)
                 if (response.data.resultCode === 0) {
                     dispatch(authMeTC());
+                } else {
+                    dispatch(stopSubmit('login', {_error: response.data.messages[0]}));
                 }
-            })
     }
 }
 
@@ -108,12 +111,10 @@ export const loginTC = (email: string, password: string, rememberMe: boolean) =>
 /*---Санка, делает запрос на сервер, чтобы разлогиниться. Если запрос корректен, мы выполним выполним экшен-крейтор,
 который сохраняет данные о пользователе, передавая значение "null" в каждое поле, тем самым очищая всю информацию о нас(очищаем кУку)---*/
 export const logoutTC = () => {
-    return (dispatch: ThunkDispatch<AppStateType, unknown, ActionsType>) => {
-        usersAuth.logout()
-            .then((response) => {
+    return async (dispatch: ThunkDispatch<AppStateType, unknown, ActionsType>) => {
+        let response = await usersAuth.logout();
                 if (response.data.resultCode === 0) {
                     dispatch(setUserData(null, null, null, false));
                 }
-            })
     }
 }

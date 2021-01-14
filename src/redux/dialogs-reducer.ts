@@ -1,7 +1,7 @@
 
 /*---Константы для экшена---*/
-const ADD_NEW_MESSAGE = 'ADD-NEW-MESSAGE';
-const DELETE_MESSAGE = 'DELETE-MESSAGE';
+const ADD_NEW_MESSAGE = 'sn/dialogs-reducer/ADD-NEW-MESSAGE';
+const DELETE_MESSAGE = 'sn/dialogs-reducer/DELETE-MESSAGE';
 
 
 /*---Типизация иницилизационного стейта---*/
