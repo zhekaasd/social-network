@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {ChangeEvent} from 'react';
 import styles from "./profileInfo.module.css";
 import {ProfileObject} from "../../../redux/profile-reducer";
 import {Preloader} from "../../../common/preloader/Preloader";
@@ -12,6 +12,8 @@ type ProfileInfoPropsType = {
     status: string
     updateStatusUser: (status: string) => void
     isFetching: boolean
+    isOwner: boolean
+    savePhoto: (filePhoto: string) => void
 }
 
 /*---Типизация данных профайла, о контактной информации пользователя---*/
@@ -19,8 +21,10 @@ type ContactsType = {
     [key: string]: string
 }
 
+
 const ProfileInfo = (props: ProfileInfoPropsType) => {
 /*---Отображение значка прогресса загружзки, если профайла не сущесутвует---*/
+
     if (!props.profile) {
         return <Preloader isFetching={props.isFetching}/>
     }
@@ -37,12 +41,21 @@ const ProfileInfo = (props: ProfileInfoPropsType) => {
         }
     }
 
+/*---Обработчик достающий данные о загруженной аватарке в интуп, и отправляет их в колбек, который передаст эту
+информацию на сервер---*/
+    const onChangedPhoto = (event: any) => {
+        if (event.target.files.length) {
+            props.savePhoto(event.target.files[0])
+        }
+    }
+
 
     return(
         <div>
 {/*---Отображение аватара из профайла, если аватара нет, показываем дефолтную картинку-заглушку---*/}
             <div>
-                <img src={ (props.profile.photos.large === null || props.profile.photos.small === null) ? logoAvatar : props.profile.photos.large } alt=""/>
+                <img src={ (props.profile.photos === null) ? logoAvatar : props.profile.photos.large } alt=""/>
+                {props.isOwner && <input type="file" onChange={onChangedPhoto} />}
             </div>
 {/*---Данные о пользователе из профайла(статус, общая информация, ссылки на контакты) и т.д.---*/}
             <div className={styles.description}>

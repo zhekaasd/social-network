@@ -6,10 +6,11 @@ const ADD_POST = 'sn/profile-reducer/ADD_POST';
 const SET_USER_PROFILE = 'sn/profile-reducer/SET-USER-PROFILE';
 const SET_STATUS_USER = 'sn/profile-reducer/SET-STATUS-USER';
 const DELETE_POST = 'sn/profile-reducer/DELETE_POST';
+const UPDATE_PHOTO_SUCCESS = 'sn/profile-reducer/UPDATE_PHOTO_SUCCESS';
 
 
 /*---Типизация подобъекта 'photos', иницилизационного объекта---*/
-type ProfilePhotosType = {
+export type ProfilePhotosType = {
     small: string
     large: string
 }
@@ -47,7 +48,7 @@ export type ProfileObject = {
 /*---Типизация иницилизационного стейта---*/
 export type InitialStatePostPageType = {
     postData: Array<InitialStatePostDateType>
-    profile: ProfileObject | null
+    profile: ProfileObject
     status: string
 }
 
@@ -78,13 +79,13 @@ let initialState: InitialStatePostPageType = {
             likeCount: '34'
         }
     ],
-    profile: null,
+    profile: null as unknown as ProfileObject,
     status: ''
 }
 
 /*---Типизация всех использумых экшенов в редьюсере---*/
 export type ProfileActionType = AddPostActionType |
-    SetUserProfileActionType | SetStatusUserType | DeletePostType;
+    SetUserProfileActionType | SetStatusUserType | DeletePostType | UpdatePhotoSuccess;
 
 
 const profileReducer = (state:InitialStatePostPageType = initialState, action: ProfileActionType): InitialStatePostPageType => {
@@ -111,6 +112,13 @@ const profileReducer = (state:InitialStatePostPageType = initialState, action: P
         case SET_STATUS_USER: {
             /*---Сохраняем в стейт стутс конкретного пользователя---*/
             return {...state, status: action.status}
+        }
+
+        case UPDATE_PHOTO_SUCCESS: {
+            return {
+                ...state,
+                profile: {...state.profile, photos: action.photos}
+            }
         }
 
         default:
@@ -145,7 +153,7 @@ type SetUserProfileActionType = {
     profile: ProfileObject
 }
 
-
+type UpdatePhotoSuccess = ReturnType<typeof updatePhotoSuccess>;
 
 
 
@@ -160,9 +168,14 @@ export const setUserProfileAC = (profile: ProfileObject) => {
     return { type: SET_USER_PROFILE,  profile: profile} as const
 }
 
-/*---Экшен крейтор, который возвращает данные о статусе текущего пользователя---*/
+/*---Экшен крейтор, который обновляет данные о статусе текущего пользователя---*/
 export const setStatusUserAC = (status: string): SetStatusUserType => {
     return {type: SET_STATUS_USER, status: status} as const
+}
+
+/*---Экшен крейтор, который обновляет фото главной страницы текущего пользователя---*/
+export const updatePhotoSuccess = (photos: ProfilePhotosType) => {
+    return {type: UPDATE_PHOTO_SUCCESS, photos: photos} as const
 }
 
 
@@ -186,6 +199,17 @@ export const updateStatusUserTC = (status: string) => async (dispatch: Dispatch)
                 dispatch(setStatusUserAC(status));
             }
 }
+
+
+/*---Санка, делает запрос на сервер за обновлением введенного сообщения статуса и его изменением,
+и диспатч этих измениний в стейт---*/
+export const savePhotoTC = (filePhoto: string) => async (dispatch: Dispatch) => {
+    let response = await profileAPI.updatePhoto(filePhoto)
+    if (response.data.resultCode === 0) {
+        dispatch(updatePhotoSuccess(response.data.data.photos));
+    }
+}
+
 
 
 export default profileReducer;

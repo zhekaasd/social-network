@@ -4,7 +4,7 @@ import {AppStateType} from "../../redux/redux-store";
 import {
     getStatusUserTC,
     getUserProfileTC,
-    ProfileObject,
+    ProfileObject, savePhotoTC,
     updateStatusUserTC
 } from "../../redux/profile-reducer";
 import {withRouter, RouteComponentProps, Redirect} from 'react-router';
@@ -35,6 +35,7 @@ type MapDispatchToProps = {
     getUserProfile: (userId: string) => void
     getStatusUser: (userId: string) => void
     updateStatusUser: (status: string) => void
+    savePhoto: (filePhoto: string) => void
 }
 
 /*---Обощенная типизация данных и колбеков передаваемых в компоненту - ProfileContainer---*/
@@ -70,6 +71,7 @@ class ProfileContainer extends React.Component<PropsTypes, {}> {
             <div>
                 <Profile {...this.props} profile={this.props.profile} isFetching={this.props.isFetching}
                          status={this.props.status} updateStatusUser={this.props.updateStatusUser}
+                         isOwner={!this.props.match.params.userId}
                 />
             </div>
         );
@@ -97,7 +99,12 @@ const mapStateToProps = (state: AppStateType): MapStateToPropsType => {
 })(WithUrlDataContainerComponent);*/
 
 export default compose<any>(
-    connect<MapStateToPropsType, MapDispatchToProps, {}, AppStateType>(mapStateToProps, {getUserProfile: getUserProfileTC, getStatusUser: getStatusUserTC, updateStatusUser: updateStatusUserTC}),
+    connect<MapStateToPropsType, MapDispatchToProps, {}, AppStateType>(mapStateToProps, {
+        getUserProfile: getUserProfileTC,
+        getStatusUser: getStatusUserTC,
+        updateStatusUser: updateStatusUserTC,
+        savePhoto: savePhotoTC
+    }),
     withAuthRedirect,
     withRouter
 )(ProfileContainer);

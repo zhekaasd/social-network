@@ -4,14 +4,16 @@ import {AppStateType} from "../../../redux/redux-store";
 import {
     InitialStatePostDateType,
     addPostActionCreator,
-    ProfileActionType
+    ProfileActionType, ProfileObject
 } from "../../../redux/profile-reducer";
 import {Dispatch} from "redux";
+import {getProfile} from "../../../redux/profile-selector";
 
 
 /*---Типизация пропсов передаваемых в компоненту - Posts---*/
 type MapStateToPropsType = {
     postDate: Array<InitialStatePostDateType>
+    profile: ProfileObject | null
 }
 
 /*---Типизация колбеков передаваемых в компоненту - Posts---*/
@@ -23,7 +25,8 @@ type MapDispatchToPropsType = {
 /*---Прокидываем через пропсы в компоненту нужную нам часть данных из стейта---*/
 let mapStateToProps = (state: AppStateType): MapStateToPropsType => {
     return {
-        postDate: state.profilePage.postData
+        postDate: state.profilePage.postData,
+        profile: getProfile(state)
     }
 }
 

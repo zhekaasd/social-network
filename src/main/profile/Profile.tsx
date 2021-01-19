@@ -3,6 +3,7 @@ import ProfileInfo from "./profileInfo/ProfileInfo";
 import {PostsContainer} from "./posts/PostsContainer";
 import {ProfileObject} from "../../redux/profile-reducer";
 import styles from "./profile.module.css";
+import {Preloader} from "../../common/preloader/Preloader";
 
 /*---Типизация компоненты - Profile---*/
 type ProfilePropsType = {
@@ -10,14 +11,21 @@ type ProfilePropsType = {
     status: string
     updateStatusUser: (status: string) => void
     isFetching: boolean
+    isOwner: boolean
+    savePhoto: (filePhoto: string) => void
 }
 
 /*---Компонента-посредник, которая прокидывает нужные нам данные дальше по ветке, внутри которой, есть две дочерние компоненты,
 первая компонента - отображает информацию и статус пользователя, вторая - отображает и может добавлять посты на страницу профайла---*/
 const Profile = (props: ProfilePropsType) => {
+
+       if (!props.profile) {
+        return <Preloader isFetching={props.isFetching}/>
+    }
+
     return (
         <div className={styles.profile}>
-            <ProfileInfo profile={props.profile} status={props.status} updateStatusUser={props.updateStatusUser} isFetching={props.isFetching} />
+            <ProfileInfo savePhoto={props.savePhoto} isOwner={props.isOwner} profile={props.profile} status={props.status} updateStatusUser={props.updateStatusUser} isFetching={props.isFetching} />
             <PostsContainer />
         </div>
     )

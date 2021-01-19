@@ -1,4 +1,5 @@
 import axios from "axios";
+import {ProfilePhotosType} from "../redux/profile-reducer";
 
 
 /*---Вспомогательная функция, которая позволяет создать отдельный экземпляр настроек с url-адресом,
@@ -61,5 +62,14 @@ export const profileAPI = {
     updateStatusUser(status: string) {
         /*---Запрос на сервер за изменением статуса в моем профиле---*/
         return instance.put(`profile/status`, {status: status})
+    },
+    updatePhoto(filePhoto: string) {
+        const formData = new FormData();
+        formData.append('image', filePhoto);
+        return instance.post('profile/photo', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        })
     }
 }

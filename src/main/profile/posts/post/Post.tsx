@@ -1,11 +1,13 @@
 import React from "react";
 import styles from "./../../profile.module.css";
 import avatar from "../../../../assets/image/avatar.png"
+import {ProfileObject} from "../../../../redux/profile-reducer";
 
 /*---Типизация входящих пропсов для компоненты - Post---*/
 type PostPropsType = {
     message: string
     likeCount: string
+    profile: ProfileObject | null
 }
 
 
@@ -13,7 +15,7 @@ type PostPropsType = {
 const Post = (props: PostPropsType) => {
     return (
         <div className={styles.avatarImg}>
-            <img src={avatar}
+            <img src={props.profile ? props.profile.photos.small : avatar}
                  height='50px'
                  width='50px'
                  alt="asd"/>

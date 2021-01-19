@@ -7,5 +7,5 @@ type PreloaderType = {
 
 /*---Компонента с крутилкой, отображается, когда идёт какой-то прогресс загрузки---*/
 export const Preloader: React.FC<PreloaderType> = (props) => {
-    return props.isFetching ? <div> <img src={preloader} alt=""/> </div> : null;
+    return !props.isFetching ? <div> <img src={preloader} alt=""/> </div> : null;
 }
