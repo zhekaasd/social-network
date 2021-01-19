@@ -9,6 +9,7 @@ type ProfilePropsType = {
     profile: ProfileObject | null //Как избавиться от "null"
     status: string
     updateStatusUser: (status: string) => void
+    isFetching: boolean
 }
 
 /*---Компонента-посредник, которая прокидывает нужные нам данные дальше по ветке, внутри которой, есть две дочерние компоненты,
@@ -16,7 +17,7 @@ type ProfilePropsType = {
 const Profile = (props: ProfilePropsType) => {
     return (
         <div className={styles.profile}>
-            <ProfileInfo profile={props.profile} status={props.status} updateStatusUser={props.updateStatusUser} />
+            <ProfileInfo profile={props.profile} status={props.status} updateStatusUser={props.updateStatusUser} isFetching={props.isFetching} />
             <PostsContainer />
         </div>
     )

@@ -10,7 +10,7 @@ const App = () => {
   return (
       <BrowserRouter>
           <div className="WrapperApp">
-            <HeaderContainer />
+                <HeaderContainer />
                 <SideBarContainer />
                 <Main />
           </div>

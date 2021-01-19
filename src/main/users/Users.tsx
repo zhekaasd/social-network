@@ -21,7 +21,7 @@ type UsersPropsType = {
 }
 
 
-function Users(props: UsersPropsType) {
+const Users = React.memo ((props: UsersPropsType) => {
 
     return <div>
         <Paginator onPageChanged={props.onPageChanged} totalUsersCount={props.totalUsersCount}
@@ -36,7 +36,7 @@ function Users(props: UsersPropsType) {
             )
         }
     </div>
-}
+})
 
 
 export default Users;

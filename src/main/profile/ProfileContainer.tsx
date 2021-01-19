@@ -27,6 +27,7 @@ type MapStateToPropsType = {
     profile: ProfileObject | null
     status: string
     authorizedUserId: string | null
+    isFetching: boolean
 }
 
 /*---Типизация колбеков передаваемых в компоненту - ProfileContainer---*/
@@ -50,7 +51,8 @@ class ProfileContainer extends React.Component<PropsTypes, {}> {
     componentDidMount() {
         let userId = this.props.match.params.userId;
         if (!userId) {
-            userId = String(Number(this.props.authorizedUserId));
+            /*---Number() - ????????---*/
+            userId = String(this.props.authorizedUserId);
 /*            if (!userId) {
                 this.props.history.push('/login');
             }*/
@@ -66,7 +68,9 @@ class ProfileContainer extends React.Component<PropsTypes, {}> {
 /*---Прокидываем через пропсы данные дальше по компоненте---*/
         return (
             <div>
-                <Profile {...this.props} profile={this.props.profile} status={this.props.status} updateStatusUser={this.props.updateStatusUser} />
+                <Profile {...this.props} profile={this.props.profile} isFetching={this.props.isFetching}
+                         status={this.props.status} updateStatusUser={this.props.updateStatusUser}
+                />
             </div>
         );
     }
@@ -77,7 +81,8 @@ const mapStateToProps = (state: AppStateType): MapStateToPropsType => {
     return {
         profile: getProfile(state),
         status: getStatus(state),
-        authorizedUserId: getAuthorizedUserId(state)
+        authorizedUserId: getAuthorizedUserId(state),
+        isFetching: state.users.isFetching
     }
 }
 

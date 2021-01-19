@@ -11,6 +11,7 @@ type ProfileInfoPropsType = {
     profile: ProfileObject | null
     status: string
     updateStatusUser: (status: string) => void
+    isFetching: boolean
 }
 
 /*---Типизация данных профайла, о контактной информации пользователя---*/
@@ -21,7 +22,7 @@ type ContactsType = {
 const ProfileInfo = (props: ProfileInfoPropsType) => {
 /*---Отображение значка прогресса загружзки, если профайла не сущесутвует---*/
     if (!props.profile) {
-        return <Preloader/>
+        return <Preloader isFetching={props.isFetching}/>
     }
 
 /*---Достаем данные пришедшие с сервера и закидываем в массив---*/

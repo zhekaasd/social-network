@@ -14,8 +14,7 @@ type LoginType = {
 }
 
 /*---Компонента с формой логинизации---*/
-const Login: React.FC<LoginType> = (props) => {
-
+const Login: React.FC<LoginType> = React.memo ((props) => {
 
 /*---Если мы авторизованы, то нас перекинет на страницу профиля---*/
     if (props.isAuth) {
@@ -33,7 +32,9 @@ const Login: React.FC<LoginType> = (props) => {
             <LoginReduxForm onSubmit={onSubmit} />
         </div>
     );
-}
+});
+
+
 
 
 /*---Типизация колбеков передаваемых в компоненту - Login---*/
@@ -45,7 +46,6 @@ type mapDispatchToPropsType = {
 type mapStateToProps = {
     isAuth: boolean
 }
-
 
 /*---Прокидываем через пропсы в компоненту нужную нам часть данных из стейта---*/
 const mapStateToProps = (state: AppStateType) => {

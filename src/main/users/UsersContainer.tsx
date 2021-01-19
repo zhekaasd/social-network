@@ -3,19 +3,19 @@ import {connect} from "react-redux";
 import {AppStateType} from "../../redux/redux-store";
 import {
     followTC,
-    requestUsersTC,
     InitialStateUsersItemType,
+    requestUsersTC,
     setCurrentPage,
     toggleIsFollowingProgress,
     unfollowTC,
 } from "../../redux/users-reducer";
 import Users from "./Users";
 import {Preloader} from "../../common/preloader/Preloader";
-import {withAuthRedirect} from "../../hoc/withAuthRedirect";
 import {compose} from "redux";
 import {
     getCurrentPage,
-    getFollowingInProgress, getIsAuth,
+    getFollowingInProgress,
+    getIsAuth,
     getIsFetching,
     getPageSize,
     getTotalUsersCount,
@@ -75,7 +75,7 @@ interface IUsersPropsType {
 }
 
 
-class UsersContainer extends React.Component<IUsersPropsType, {}> {
+class UsersContainer extends React.PureComponent<IUsersPropsType, {}> {
 
 /*---Метод жизненного цикла(вмонтирования компоненты), в который приходит санка, с запросом на сервер за списком пользователей,
 где в качестве параметров передаются номер страницы и кол-во пользвователей указанные в стейте по умолчанию(по умолчанию currentPage = 1, pageSize = 15)---*/
@@ -83,6 +83,10 @@ class UsersContainer extends React.Component<IUsersPropsType, {}> {
         this.props.getUsers(this.props.currentPage, this.props.pageSize);
     }
 
+/*---Метод жизненного цикла, который вернет значение "currentPage" к иницилизационному, когда компонента "умрёт"---*/
+    componentWillUnmount = () => {
+        this.props.setCurrentPage(1);
+    }
 
 /*---Метод, переключения меджу страницами запрашиваемых пользователей---*/
     onPageChanged = (pageNumber: number) => {
@@ -91,10 +95,12 @@ class UsersContainer extends React.Component<IUsersPropsType, {}> {
     }
 
 
+
     render() {
 /*---Пока данные не будут загружены, будет отобраэаться прогресс загрузки, когда все данные загрузятся, ототбразится список поьлзователей---*/
         return <>
-            { this.props.isFetching ? <Preloader /> : <Users
+            <Preloader isFetching={this.props.isFetching} />
+            <Users
                 users={this.props.users}
                 onPageChanged={this.onPageChanged}
                 unfollow={this.props.unfollow}
@@ -104,7 +110,7 @@ class UsersContainer extends React.Component<IUsersPropsType, {}> {
                 totalUsersCount={this.props.totalUsersCount}
                 toggleIsFollowingProgress={this.props.toggleIsFollowingProgress}
                 followingInProgress={this.props.followingInProgress}
-            /> }
+            />
 
         </>
     }

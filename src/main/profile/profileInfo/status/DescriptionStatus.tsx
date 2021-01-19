@@ -7,7 +7,7 @@ interface IDescriptionStatus {
 }
 
 /*---Комопнента отображения статуса с переключением в режим редактирования и обратно---*/
-class DescriptionStatus extends React.Component<IDescriptionStatus, any> {
+export class DescriptionStatusClass extends React.Component<IDescriptionStatus, any> {
 
 /*---Локальный стейт управлением отображения статуса---*/
     state = {
