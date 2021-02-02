@@ -1,4 +1,4 @@
-import {ProfileObject} from "./profile-reducer";
+import {ProfileObjectType} from "./profile-reducer";
 import {usersAPI, usersAuth} from "../api/api";
 import {ThunkAction, ThunkDispatch} from "redux-thunk";
 import {AppStateType} from "./redux-store";
@@ -12,16 +12,16 @@ const SET_AUTH_USER_PROFILE = "sn/auth-reducer/SET-AUTH-USER-PROFILE";
 
 /*---Типизация иницилизационного стейта---*/
 export type InitialStateAuthType = {
-    userId: null | string
+    userId: null | number
     login: null | string
     email: null | string
     isAuth: boolean
-    profile: ProfileObject | null
+    profile: ProfileObjectType | null
 }
 
 /*---Иницилизационный стейт с начальными данными---*/
 const initialState = {
-    userId: null,
+    userId: null as (number | null),
     email: null,
     login: null,
     isAuth: false,
@@ -60,12 +60,12 @@ type SetUserDataType = ReturnType<typeof setUserData>;
 type SetAuthUserProfile = ReturnType<typeof setAuthUserProfile>;
 
 /*---Экшен крейтор, с информацией для авторизации пользователя---*/
-export const setUserData = (userId: string | null, login: string | null, email: string | null, isAuth: boolean) => {
+export const setUserData = (userId: number | null, login: string | null, email: string | null, isAuth: boolean) => {
     return {type: SET_USER_DATA, payload: {userId: userId,login: login, email: email, isAuth: isAuth}} as const
 }
 
 /*---Экшен крейтор, который вернёт данные авторизованного пользователя---*/
-export const setAuthUserProfile = (profile: ProfileObject) => {
+export const setAuthUserProfile = (profile: ProfileObjectType) => {
     return {type: SET_AUTH_USER_PROFILE, profile: profile} as const
 }
 

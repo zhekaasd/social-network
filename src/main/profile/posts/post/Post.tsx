@@ -1,13 +1,13 @@
 import React from "react";
 import styles from "./../../profile.module.css";
 import avatar from "../../../../assets/image/avatar.png"
-import {ProfileObject} from "../../../../redux/profile-reducer";
+import {ProfileObjectType} from "../../../../redux/profile-reducer";
 
 /*---Типизация входящих пропсов для компоненты - Post---*/
 type PostPropsType = {
     message: string
     likeCount: string
-    profile: ProfileObject | null
+    profile: ProfileObjectType | null
 }
 
 

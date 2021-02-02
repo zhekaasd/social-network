@@ -4,7 +4,7 @@ import {AppStateType} from "../../../redux/redux-store";
 import {
     InitialStatePostDateType,
     addPostActionCreator,
-    ProfileActionType, ProfileObject
+    ProfileActionType, ProfileObjectType
 } from "../../../redux/profile-reducer";
 import {Dispatch} from "redux";
 import {getProfile} from "../../../redux/profile-selector";
@@ -13,7 +13,7 @@ import {getProfile} from "../../../redux/profile-selector";
 /*---Типизация пропсов передаваемых в компоненту - Posts---*/
 type MapStateToPropsType = {
     postDate: Array<InitialStatePostDateType>
-    profile: ProfileObject | null
+    profile: ProfileObjectType | null
 }
 
 /*---Типизация колбеков передаваемых в компоненту - Posts---*/

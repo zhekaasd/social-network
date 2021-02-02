@@ -1,5 +1,5 @@
 import axios from "axios";
-import {ProfilePhotosType} from "../redux/profile-reducer";
+import {ProfileObjectType, ProfilePhotosType} from "../redux/profile-reducer";
 
 
 /*---Вспомогательная функция, которая позволяет создать отдельный экземпляр настроек с url-адресом,
@@ -19,7 +19,7 @@ export const usersAPI = {
         номером страницы и количеством пользователей---*/
         return instance.get(`users?page=${pageNumber}&count=${pageSize}`)
     },
-    getUserProfile(userId: string) {
+    getUserProfile(userId: number) {
         /*---Запрос на сервер за профилем конкретного пользователя, используя userId, как id пользователя---*/
         console.warn('..please use method from @profileAPI.getUserProfile@')
         return profileAPI.getUserProfile(userId);
@@ -51,11 +51,11 @@ export const usersAuth = {
 }
 
 export const profileAPI = {
-    getUserProfile(userId: string) {
+    getUserProfile(userId: number) {
         /*---Запрос на сервер за профилем конкретного пользователя, используя userId, как id пользователя---*/
         return instance.get(`profile/` + userId)
     },
-    getStatusUser(userId: string) {
+    getStatusUser(userId: number) {
         /*---Запрос на сервер за статусом в профиле конкретного пользователя---*/
         return instance.get(`profile/status/${userId}`)
     },
@@ -63,7 +63,7 @@ export const profileAPI = {
         /*---Запрос на сервер за изменением статуса в моем профиле---*/
         return instance.put(`profile/status`, {status: status})
     },
-    updatePhoto(filePhoto: string) {
+    updatePhoto(filePhoto: File) {
         const formData = new FormData();
         formData.append('image', filePhoto);
         return instance.post('profile/photo', formData, {
@@ -71,5 +71,8 @@ export const profileAPI = {
                 'Content-Type': 'multipart/form-data'
             }
         })
+    },
+    updateProfileInfo(object: ProfileObjectType) {
+        return instance.put('profile', object)
     }
 }

@@ -12,7 +12,7 @@ type SidebarPropsType = {
 const Sidebar = (props: SidebarPropsType) => {
 
 /*---Проходимся по массиву с данными сайдбара и изменяем url-адреса в зависимости от выбранной вкладки---*/
-    let NavItem = props.navDate.map(item => <div className={styles.sideBar}>
+    let NavItem = props.navDate.map(item => <div key={item.id} className={styles.sideBar}>
         <NavLink to={"/" + item.to} activeClassName={styles.activeLink}>{item.title}</NavLink>
     </div>)
 /*---Возвращаем список сайдбара---*/

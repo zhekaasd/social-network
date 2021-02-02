@@ -1,18 +1,19 @@
 import React from 'react';
 import ProfileInfo from "./profileInfo/ProfileInfo";
 import {PostsContainer} from "./posts/PostsContainer";
-import {ProfileObject} from "../../redux/profile-reducer";
+import {ProfileObjectType} from "../../redux/profile-reducer";
 import styles from "./profile.module.css";
 import {Preloader} from "../../common/preloader/Preloader";
 
 /*---Типизация компоненты - Profile---*/
 type ProfilePropsType = {
-    profile: ProfileObject | null //Как избавиться от "null"
+    profile: ProfileObjectType | null //Как избавиться от "null"
     status: string
     updateStatusUser: (status: string) => void
     isFetching: boolean
     isOwner: boolean
-    savePhoto: (filePhoto: string) => void
+    savePhoto: (filePhoto: File) => void
+    updateProfileInfo: (profile: ProfileObjectType) => Promise<any>
 }
 
 /*---Компонента-посредник, которая прокидывает нужные нам данные дальше по ветке, внутри которой, есть две дочерние компоненты,
@@ -25,7 +26,7 @@ const Profile = (props: ProfilePropsType) => {
 
     return (
         <div className={styles.profile}>
-            <ProfileInfo savePhoto={props.savePhoto} isOwner={props.isOwner} profile={props.profile} status={props.status} updateStatusUser={props.updateStatusUser} isFetching={props.isFetching} />
+            <ProfileInfo updateProfileInfo={props.updateProfileInfo} savePhoto={props.savePhoto} isOwner={props.isOwner} profile={props.profile} status={props.status} updateStatusUser={props.updateStatusUser} isFetching={props.isFetching} />
             <PostsContainer />
         </div>
     )

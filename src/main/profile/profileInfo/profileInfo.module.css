@@ -14,10 +14,19 @@
 .descriptionTitleInfo {
     text-decoration: underline;
     color: pink;
-    font-size: 20px
+    font-size: 20px;
+}
+
+.editModeButton {
+    margin: 0 5px;
 }
 
 .descriptionInfo {
     display: flex;
     flex-direction: column;
+}
+
+.error {
+    color: red;
+    font-size: 22px;
 }

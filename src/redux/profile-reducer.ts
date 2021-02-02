@@ -1,5 +1,6 @@
 import {Dispatch} from "redux";
 import {profileAPI, usersAPI} from "../api/api";
+import {stopSubmit} from "redux-form";
 
 /*---Константы для экшена---*/
 const ADD_POST = 'sn/profile-reducer/ADD_POST';
@@ -23,7 +24,7 @@ export type InitialStatePostDateType = {
 }
 
 /*---Типизация подобъекта 'contacts', иницилизационного объекта---*/
-export type ProfileObjectContacts = {
+export type ProfileObjectContactsType = {
     facebook: string
     github: string
     instagram: string
@@ -35,9 +36,9 @@ export type ProfileObjectContacts = {
 }
 
 /*---Типизация иницилизационного стейта---*/
-export type ProfileObject = {
+export type ProfileObjectType = {
     aboutMe: string
-    contacts: ProfileObjectContacts
+    contacts: ProfileObjectContactsType
     fullName: string
     lookingForAJob: boolean
     lookingForAJobDescription: string
@@ -48,7 +49,7 @@ export type ProfileObject = {
 /*---Типизация иницилизационного стейта---*/
 export type InitialStatePostPageType = {
     postData: Array<InitialStatePostDateType>
-    profile: ProfileObject
+    profile: ProfileObjectType | null
     status: string
 }
 
@@ -79,7 +80,7 @@ let initialState: InitialStatePostPageType = {
             likeCount: '34'
         }
     ],
-    profile: null as unknown as ProfileObject,
+    profile: null,
     status: ''
 }
 
@@ -117,7 +118,7 @@ const profileReducer = (state:InitialStatePostPageType = initialState, action: P
         case UPDATE_PHOTO_SUCCESS: {
             return {
                 ...state,
-                profile: {...state.profile, photos: action.photos}
+                profile: {...state.profile, photos: action.photos} as ProfileObjectType
             }
         }
 
@@ -150,7 +151,7 @@ type AddPostActionType = {
 /*---Типизация экшен крейтора с сохранением данных профиля пользователя в стейт---*/
 type SetUserProfileActionType = {
     type: typeof SET_USER_PROFILE
-    profile: ProfileObject
+    profile: ProfileObjectType
 }
 
 type UpdatePhotoSuccess = ReturnType<typeof updatePhotoSuccess>;
@@ -164,7 +165,7 @@ export const addPostActionCreator = (newPostText: string): AddPostActionType => 
 export const deletePostAC = (id: number) => { return {type: DELETE_POST, id: id} as const };
 
 /*---Экшен крейтор, возвращающий данные о текущем пользователе---*/
-export const setUserProfileAC = (profile: ProfileObject) => {
+export const setUserProfileAC = (profile: ProfileObjectType) => {
     return { type: SET_USER_PROFILE,  profile: profile} as const
 }
 
@@ -180,20 +181,20 @@ export const updatePhotoSuccess = (photos: ProfilePhotosType) => {
 
 
 /*---Санка, делает запрос на сервер за информацией о текущем пользователе и диспатчим эту информацию в стейт---*/
-export const getUserProfileTC = (userId: string) => async (dispatch: Dispatch<ProfileActionType>) => {
+export const getUserProfileTC = (userId: number) => async (dispatch: Dispatch<ProfileActionType>) => {
     let response = await usersAPI.getUserProfile(userId)
             dispatch(setUserProfileAC(response.data))
 }
 
 /*---Санка, делает запрос на сервер за статусом текущего пользователя и диспатчим эту информацию в стейт---*/
-export const getStatusUserTC = (userId: string) => async (dispatch: Dispatch) => {
+export const getStatusUserTC = (userId: number) => async (dispatch: Dispatch<ProfileActionType>) => {
     let response = await profileAPI.getStatusUser(userId)
             dispatch(setStatusUserAC(response.data))
 }
 
 /*---Санка, делает запрос на сервер за обновлением введенного сообщения статуса и его изменением,
 и диспатч этих измениний в стейт---*/
-export const updateStatusUserTC = (status: string) => async (dispatch: Dispatch) => {
+export const updateStatusUserTC = (status: string) => async (dispatch: Dispatch<ProfileActionType>) => {
     let response = await profileAPI.updateStatusUser(status)
             if (response.data.resultCode === 0) {
                 dispatch(setStatusUserAC(status));
@@ -203,13 +204,25 @@ export const updateStatusUserTC = (status: string) => async (dispatch: Dispatch)
 
 /*---Санка, делает запрос на сервер за обновлением введенного сообщения статуса и его изменением,
 и диспатч этих измениний в стейт---*/
-export const savePhotoTC = (filePhoto: string) => async (dispatch: Dispatch) => {
+export const savePhotoTC = (filePhoto: File) => async (dispatch: Dispatch<ProfileActionType>) => {
     let response = await profileAPI.updatePhoto(filePhoto)
     if (response.data.resultCode === 0) {
         dispatch(updatePhotoSuccess(response.data.data.photos));
     }
 }
 
+
+/*--- Функция обновления данных авторизованного пользователя ---*/
+export const updateProfileInfoTC = (profile: ProfileObjectType) => async (dispatch: any, getState: any) => {
+    const userId = getState().auth.userId;
+    let response = await profileAPI.updateProfileInfo(profile);
+    if (response.data.resultCode === 0) {
+        dispatch(getUserProfileTC(userId));
+    } else {
+        dispatch(stopSubmit('description-form', {_error: response.data.messages[0]}))
+        return Promise.reject(response.data.messages[0])
+    }
+}
 
 
 export default profileReducer;

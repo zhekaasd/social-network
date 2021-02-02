@@ -4,7 +4,7 @@ import {AppStateType} from "../../redux/redux-store";
 import {
     getStatusUserTC,
     getUserProfileTC,
-    ProfileObject, savePhotoTC,
+    ProfileObjectType, savePhotoTC, updateProfileInfoTC,
     updateStatusUserTC
 } from "../../redux/profile-reducer";
 import {withRouter, RouteComponentProps, Redirect} from 'react-router';
@@ -24,18 +24,21 @@ type ParamsType = {
 
 /*---Типизация пропсов передаваемых в компоненту - ProfileContainer---*/
 type MapStateToPropsType = {
-    profile: ProfileObject | null
+    profile: ProfileObjectType | null
     status: string
-    authorizedUserId: string | null
+    authorizedUserId: number | null
     isFetching: boolean
 }
 
+/*type MapPropsType = ReturnType<typeof mapStateToProps>;*/
+
 /*---Типизация колбеков передаваемых в компоненту - ProfileContainer---*/
 type MapDispatchToProps = {
-    getUserProfile: (userId: string) => void
-    getStatusUser: (userId: string) => void
+    getUserProfile: (userId: number) => void
+    getStatusUser: (userId: number) => void
     updateStatusUser: (status: string) => void
-    savePhoto: (filePhoto: string) => void
+    savePhoto: (filePhoto: File) => void
+    updateProfileInfo: (profile: ProfileObjectType) => any
 }
 
 /*---Обощенная типизация данных и колбеков передаваемых в компоненту - ProfileContainer---*/
@@ -46,22 +49,30 @@ type PropsTypes = RouteComponentProps<ParamsType> & OwnPropsType;
 
 class ProfileContainer extends React.Component<PropsTypes, {}> {
 
+    refreshProfile = () => {
+        let userId: number | null = +this.props.match.params.userId;
+        if (!userId) {
+            userId = this.props.authorizedUserId;
+            if (!userId) {
+                this.props.history.push('/login');
+            }
+        }
+        this.props.getUserProfile(userId as number);
+        this.props.getStatusUser(userId as number);
+    }
+
 /*---Метод жизненного цикла, который сообщает, что компонента была создана, счтывает из url-адреса данные, которые пришли
 в качестве параметров, проверяет, существует ли такой пользователь, и если пользователь сущесвует, запрашивает информацию о
 пользователе, его статус, контакты, имя и другую информацию---*/
     componentDidMount() {
-        let userId = this.props.match.params.userId;
-        if (!userId) {
-            /*---Number() - ????????---*/
-            userId = String(this.props.authorizedUserId);
-/*            if (!userId) {
-                this.props.history.push('/login');
-            }*/
-        }
-        this.props.getUserProfile(userId);
-        this.props.getStatusUser(userId);
+        this.refreshProfile();
     }
 
+    componentDidUpdate(prevProps: Readonly<PropsTypes>, prevState: Readonly<PropsTypes>): void {
+        if (this.props.match.params.userId !== prevProps.match.params.userId) {
+            this.refreshProfile();
+        }
+    }
 
 
     render() {
@@ -72,6 +83,7 @@ class ProfileContainer extends React.Component<PropsTypes, {}> {
                 <Profile {...this.props} profile={this.props.profile} isFetching={this.props.isFetching}
                          status={this.props.status} updateStatusUser={this.props.updateStatusUser}
                          isOwner={!this.props.match.params.userId}
+                         updateProfileInfo={this.props.updateProfileInfo}
                 />
             </div>
         );
@@ -103,7 +115,8 @@ export default compose<any>(
         getUserProfile: getUserProfileTC,
         getStatusUser: getStatusUserTC,
         updateStatusUser: updateStatusUserTC,
-        savePhoto: savePhotoTC
+        savePhoto: savePhotoTC,
+        updateProfileInfo: updateProfileInfoTC
     }),
     withAuthRedirect,
     withRouter

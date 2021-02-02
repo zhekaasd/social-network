@@ -17,3 +17,9 @@
 .likeStats {
     margin: 5px;
 }
+
+.descriptionTitleInfo {
+    text-decoration: underline;
+    color: pink;
+    font-size: 20px
+}

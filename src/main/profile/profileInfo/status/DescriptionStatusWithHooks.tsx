@@ -1,4 +1,5 @@
 import React, {ChangeEvent, useEffect, useState} from "react";
+import styles from "../profileInfo.module.css";
 
 /*---Типизация входящих пропсов компоненты - DescriptionStatus---*/
 type DescriptionStatusWithHooksType = {
@@ -42,12 +43,13 @@ export const DescriptionStatusWithHooks: React.FC<DescriptionStatusWithHooksType
 
 
 /*---Если эдитМод активирован, то отображаем поле с редактированием текста, иначе покажем текст статуса---*/
-        return <div>
-            {
-                !editMode ? <span onDoubleClick={activatedEditMode}>{props.status}</span>
-                    :
-                    <input type="text" autoFocus onBlur={deactivatedEditMode} value={status}
-                           onChange={updateStatusValue}/>
-            }
-        </div>
+        return <div className={styles.status}>
+        <div className={styles.descriptionTitleInfo}>Status: </div>
+        {
+            !editMode ? <span onDoubleClick={activatedEditMode}>"{props.status}"</span>
+                :
+                <input type="text" autoFocus onBlur={deactivatedEditMode} value={status}
+                       onChange={updateStatusValue}/>
+        }
+    </div>
 }

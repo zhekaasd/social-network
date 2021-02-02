@@ -1,19 +1,24 @@
-import React, {ChangeEvent} from 'react';
+import React, {ChangeEvent, useState} from 'react';
 import styles from "./profileInfo.module.css";
-import {ProfileObject} from "../../../redux/profile-reducer";
+import {ProfileObjectType} from "../../../redux/profile-reducer";
 import {Preloader} from "../../../common/preloader/Preloader";
 import logoAvatar from "../../../assets/image/avatar.png";
 import {DescriptionStatusWithHooks} from "./status/DescriptionStatusWithHooks";
 import {Redirect} from "react-router";
+import {
+    DescriptionProfile
+} from "./description/DescriptionProfile";
+import {DescriptionProfileForm, DescriptionProfileFormRedux} from "./description/DescriptionProfileForm";
 
 /*---Типизация компоненты - ProfileInfo---*/
 type ProfileInfoPropsType = {
-    profile: ProfileObject | null
+    profile: ProfileObjectType
     status: string
     updateStatusUser: (status: string) => void
     isFetching: boolean
     isOwner: boolean
-    savePhoto: (filePhoto: string) => void
+    savePhoto: (filePhoto: File) => void
+    updateProfileInfo: (profile: ProfileObjectType) => Promise<any>
 }
 
 /*---Типизация данных профайла, о контактной информации пользователя---*/
@@ -23,32 +28,44 @@ type ContactsType = {
 
 
 const ProfileInfo = (props: ProfileInfoPropsType) => {
+
+/*---Переключения режима редактирования данных профиля---*/
+    let [editMode, setEditMode] = useState<boolean>(false);
+
 /*---Отображение значка прогресса загружзки, если профайла не сущесутвует---*/
 
     if (!props.profile) {
         return <Preloader isFetching={props.isFetching}/>
     }
 
-/*---Достаем данные пришедшие с сервера и закидываем в массив---*/
-    let contacts: ContactsType = props.profile.contacts;
-    let linkInfo = [];
 
-    for (let key in contacts) {
-        if (contacts[key] !== null) {
-            linkInfo.push({nameLink: key, yourInfo: contacts[key]});
-        } else {
-            linkInfo.push({nameLink: key, yourInfo: '---'});
-        }
-    }
 
 /*---Обработчик достающий данные о загруженной аватарке в интуп, и отправляет их в колбек, который передаст эту
 информацию на сервер---*/
-    const onChangedPhoto = (event: any) => {
-        if (event.target.files.length) {
+    const onChangedPhoto = (event: ChangeEvent<HTMLInputElement>) => {
+        if (event.target.files && event.target.files.length) {
             props.savePhoto(event.target.files[0])
         }
     }
 
+/*---Включение режима редактирования профиля---*/
+    const activatedEditMode = () => {
+        setEditMode(true);
+    }
+
+/*---Выход из режима редактирования профиля---*/
+    const deactivatedEditMode = () => {
+        setEditMode(false);
+    }
+
+/*---Функция обновления данных профайла, собирающая данные из формы. После того, как функция зарезолвится, выполнить
+выход из режима редактирования(это не правильный подход)---*/
+    const updateProfileInfo = (formData: ProfileObjectType) => {
+        props.updateProfileInfo(formData)
+            .then( res => {
+                setEditMode(false);
+            })
+    }
 
     return(
         <div>
@@ -60,27 +77,14 @@ const ProfileInfo = (props: ProfileInfoPropsType) => {
 {/*---Данные о пользователе из профайла(статус, общая информация, ссылки на контакты) и т.д.---*/}
             <div className={styles.description}>
     {/*---Статус---*/}
-                <div className={styles.status}>
-                    <span className={styles.descriptionTitleInfo}>Status: </span>
-                    <DescriptionStatusWithHooks status={props.status} updateStatusUser={props.updateStatusUser} />
-                </div>
+            <DescriptionStatusWithHooks status={props.status} updateStatusUser={props.updateStatusUser} />
+
     {/*---Основные данные о пользователе---*/}
-                <div className={styles.information}>
-                    <span className={styles.descriptionTitleInfo}>Description:</span>
-                    <div className={styles.descriptionInfo}>
-                        <span><b>My name is: </b> <i>{props.profile.fullName}</i></span>
-                        <span><b>About me:</b> <i>{props.profile.aboutMe}</i></span>
-                        <span><b>Looking for a job:</b> <i>{props.profile.lookingForAJob}</i></span>
-                        <span><b>Looking for a job description:</b> <i>{props.profile.lookingForAJobDescription}</i></span>
-                    </div>
-                </div>
-    {/*---Контактная информация о пользователе---*/}
-                <div className={styles.contacts}>
-                    <span className={styles.descriptionTitleInfo}>My links:</span>
-                    {
-                        linkInfo.map( l => <div key={l.nameLink}> <b>{l.nameLink}: </b> <i>{l.yourInfo}</i> </div>)
-                    }
-                </div>
+                {
+                    editMode ? <DescriptionProfileFormRedux onSubmit={updateProfileInfo} deactivatedEditMode={deactivatedEditMode}
+                                                            profile={props.profile} initialValues={props.profile} />
+                    : <DescriptionProfile isOwner={props.isOwner} profile={props.profile}  activatedEditMode={activatedEditMode} />
+                }
             </div>
         </div>
     )

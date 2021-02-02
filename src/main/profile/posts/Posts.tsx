@@ -1,6 +1,6 @@
 import React from "react";
 import styles from "./../profile.module.css";
-import {InitialStatePostDateType, ProfileObject} from "../../../redux/profile-reducer";
+import {InitialStatePostDateType, ProfileObjectType} from "../../../redux/profile-reducer";
 import Post from "./post/Post";
 import {reduxForm, Field, InjectedFormProps} from "redux-form";
 import {maxLength, required} from "../../../utils/validators";
@@ -10,7 +10,7 @@ import {creatorField, Textarea} from "../../../common/FormControl/FormControl";
 type PostsPropsType = {
     postDate: Array<InitialStatePostDateType>
     addPost: (newPostText: string) => void
-    profile: ProfileObject | null
+    profile: ProfileObjectType | null
 }
 
 
@@ -28,7 +28,7 @@ const Posts = React.memo ((props: PostsPropsType) => {
 /*---Отображение поля ввода для добавления постов и с кнопкой их добавления в стейт, а также отображение, всех имеющихся постов на "сервере"---*/
     return (
         <div className={styles.addNewPost}>
-            <h3>Add new post:</h3>
+            <h3 className={styles.descriptionTitleInfo}>Add new post: </h3>
             <PostReduxForm onSubmit={addNextPost} />
             <div className={styles.myNewPost}>
                 {postsElements}

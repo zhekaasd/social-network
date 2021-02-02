@@ -3,7 +3,7 @@ import profileReducer, {
     addPostActionCreator,
     deletePostAC,
     InitialStatePostPageType,
-    ProfileObject, setStatusUserAC, setUserProfileAC
+    ProfileObjectType, setStatusUserAC, setUserProfileAC
 } from "../redux/profile-reducer";
 
 const startState: InitialStatePostPageType = {
@@ -65,7 +65,7 @@ it(`after deleting length shouldn't be decrement if 'id' is incorrect`, function
 
 
 it(`set profile user is correct`, function () {
-    const profileUser: ProfileObject = {
+    const profileUser: ProfileObjectType = {
         aboutMe: '',
         contacts: {
             facebook: '',
