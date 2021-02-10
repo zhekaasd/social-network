@@ -1,5 +1,5 @@
 import {ProfileObjectType} from "./profile-reducer";
-import {usersAPI, usersAuth} from "../api/api";
+import {securityAPI, usersAPI, usersAuth} from "../api/api";
 import {ThunkAction, ThunkDispatch} from "redux-thunk";
 import {AppStateType} from "./redux-store";
 import {stopSubmit} from "redux-form";
@@ -8,6 +8,7 @@ import {Dispatch} from "redux";
 /*---Константы для экшена---*/
 const SET_USER_DATA = "sn/auth-reducer/SET-USER-DATA";
 const SET_AUTH_USER_PROFILE = "sn/auth-reducer/SET-AUTH-USER-PROFILE";
+const GET_CAPTCHA_URL_SUCCESS = "sn/auth-reducer/GET-CAPTCHA-URL-SUCCESS";
 
 
 /*---Типизация иницилизационного стейта---*/
@@ -17,6 +18,7 @@ export type InitialStateAuthType = {
     email: null | string
     isAuth: boolean
     profile: ProfileObjectType | null
+    captchaUrl: null | string
 }
 
 /*---Иницилизационный стейт с начальными данными---*/
@@ -25,11 +27,12 @@ const initialState = {
     email: null,
     login: null,
     isAuth: false,
-    profile: null
+    profile: null,
+    captchaUrl: null
 }
 
 /*---Типизация всех использумых экшенов в редьюсере---*/
-type ActionsType = SetUserDataType | SetAuthUserProfile;
+type ActionsType = SetUserDataType | SetAuthUserProfile | GetCaptchaSuccess;
 
 
 export const authReducer = (state: InitialStateAuthType = initialState, action: ActionsType): InitialStateAuthType => {
@@ -47,6 +50,10 @@ export const authReducer = (state: InitialStateAuthType = initialState, action: 
             /*---Сохраняем данные своего профиля в стейт---*/
             return {...state, profile: action.profile}
         }
+
+        case GET_CAPTCHA_URL_SUCCESS: {
+            return {...state, ...action.payload}
+        }
     }
 
 /*---Если не один из типов не выполнен, то вернём иницилизационное значение---*/
@@ -58,6 +65,7 @@ export const authReducer = (state: InitialStateAuthType = initialState, action: 
 /*---Типизация экшен крейторов---*/
 type SetUserDataType = ReturnType<typeof setUserData>;
 type SetAuthUserProfile = ReturnType<typeof setAuthUserProfile>;
+type GetCaptchaSuccess = ReturnType<typeof getCaptchaSuccess>;
 
 /*---Экшен крейтор, с информацией для авторизации пользователя---*/
 export const setUserData = (userId: number | null, login: string | null, email: string | null, isAuth: boolean) => {
@@ -67,6 +75,11 @@ export const setUserData = (userId: number | null, login: string | null, email: 
 /*---Экшен крейтор, который вернёт данные авторизованного пользователя---*/
 export const setAuthUserProfile = (profile: ProfileObjectType) => {
     return {type: SET_AUTH_USER_PROFILE, profile: profile} as const
+}
+
+/*---Экшен крейтор, обновляет информацию в стейте о капче---*/
+export const getCaptchaSuccess = (captchaUrl: string | null) => {
+    return {type: GET_CAPTCHA_URL_SUCCESS, payload: {captchaUrl: captchaUrl}} as const
 }
 
 /*---Типизация санки с запросом на авторизацию---*/
@@ -96,14 +109,25 @@ export const authMeTC = (): ThunkType => async (dispatch) => {
 /*---Санка, делает запрос на сервер отправляя определенные данные, чтобы залогиниться. Если данные корректные, мы выполним санку,
 которая запрашивает авторизацию и профиль авторизированного пользователя, для работы с его данными(создаем кУку). В противном случае,
 получим сообщение об ошибке---*/
-export const loginTC = (email: string, password: string, rememberMe: boolean) => {
+export const loginTC = (email: string, password: string, rememberMe: boolean, captcha: string) => {
     return async (dispatch: Dispatch<any>) => {
-        let response = await usersAuth.login(email, password, rememberMe)
+        let response = await usersAuth.login(email, password, rememberMe, captcha)
                 if (response.data.resultCode === 0) {
                     dispatch(authMeTC());
                 } else {
+                    if(response.data.resultCode === 10) {
+                        dispatch(getCaptchaUrl());
+                    }
                     dispatch(stopSubmit('login', {_error: response.data.messages[0]}));
                 }
+    }
+}
+
+/*---Санка делающая запрос за url-image капчи, и добавляет эти данные о капче в стейт---*/
+export const getCaptchaUrl = () => {
+    return async (dispatch: Dispatch<ActionsType>) => {
+        const response = await securityAPI.getCaptchaUrl();
+        dispatch(getCaptchaSuccess(response.data.url));
     }
 }
 

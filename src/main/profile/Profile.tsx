@@ -14,6 +14,9 @@ type ProfilePropsType = {
     isOwner: boolean
     savePhoto: (filePhoto: File) => void
     updateProfileInfo: (profile: ProfileObjectType) => Promise<any>
+    editModeProfile: boolean
+    editModeActivated: () => void
+    editModeDeactivated: () => void
 }
 
 /*---Компонента-посредник, которая прокидывает нужные нам данные дальше по ветке, внутри которой, есть две дочерние компоненты,
@@ -26,7 +29,7 @@ const Profile = (props: ProfilePropsType) => {
 
     return (
         <div className={styles.profile}>
-            <ProfileInfo updateProfileInfo={props.updateProfileInfo} savePhoto={props.savePhoto} isOwner={props.isOwner} profile={props.profile} status={props.status} updateStatusUser={props.updateStatusUser} isFetching={props.isFetching} />
+            <ProfileInfo editModeDeactivated={props.editModeDeactivated} editModeActivated={props.editModeActivated} editModeProfile={props.editModeProfile} updateProfileInfo={props.updateProfileInfo} savePhoto={props.savePhoto} isOwner={props.isOwner} profile={props.profile} status={props.status} updateStatusUser={props.updateStatusUser} isFetching={props.isFetching} />
             <PostsContainer />
         </div>
     )

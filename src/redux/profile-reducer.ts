@@ -8,6 +8,8 @@ const SET_USER_PROFILE = 'sn/profile-reducer/SET-USER-PROFILE';
 const SET_STATUS_USER = 'sn/profile-reducer/SET-STATUS-USER';
 const DELETE_POST = 'sn/profile-reducer/DELETE_POST';
 const UPDATE_PHOTO_SUCCESS = 'sn/profile-reducer/UPDATE_PHOTO_SUCCESS';
+const EDIT_MODE_ACTIVATED = 'sn/profile-reducer/EDIT_MODE_ACTIVATED';
+const EDIT_MODE_DEACTIVATED = 'sn/profile-reducer/EDIT_MODE_DEACTIVATED';
 
 
 /*---Типизация подобъекта 'photos', иницилизационного объекта---*/
@@ -51,7 +53,10 @@ export type InitialStatePostPageType = {
     postData: Array<InitialStatePostDateType>
     profile: ProfileObjectType | null
     status: string
+    editModeProfile: boolean
 }
+
+
 
 /*---Иницилизационный стейт с начальными данными---*/
 let initialState: InitialStatePostPageType = {
@@ -81,12 +86,14 @@ let initialState: InitialStatePostPageType = {
         }
     ],
     profile: null,
-    status: ''
+    status: '',
+    editModeProfile: false
 }
 
 /*---Типизация всех использумых экшенов в редьюсере---*/
 export type ProfileActionType = AddPostActionType |
-    SetUserProfileActionType | SetStatusUserType | DeletePostType | UpdatePhotoSuccess;
+    SetUserProfileActionType | SetStatusUserType | DeletePostType | UpdatePhotoSuccess | EditModeActivatedType
+    | EditModeDeactivatedType;
 
 
 const profileReducer = (state:InitialStatePostPageType = initialState, action: ProfileActionType): InitialStatePostPageType => {
@@ -122,6 +129,14 @@ const profileReducer = (state:InitialStatePostPageType = initialState, action: P
             }
         }
 
+        case EDIT_MODE_ACTIVATED: {
+            return {...state, editModeProfile: true}
+        }
+
+        case EDIT_MODE_DEACTIVATED: {
+            return {...state, editModeProfile: false}
+        }
+
         default:
             /*---Если не один из типов не выполнен, то вернём иницилизационное значение---*/
             return state;
@@ -154,7 +169,12 @@ type SetUserProfileActionType = {
     profile: ProfileObjectType
 }
 
+/*---Типизация экшен крейтора, который изменяет фото в профиле---*/
 type UpdatePhotoSuccess = ReturnType<typeof updatePhotoSuccess>;
+
+/*---Типизация экшен крейторов переключающих режим редактирования---*/
+type EditModeActivatedType = ReturnType<typeof editModeActivatedAC>;
+type EditModeDeactivatedType = ReturnType<typeof editModeDeactivatedAC>;
 
 
 
@@ -179,6 +199,15 @@ export const updatePhotoSuccess = (photos: ProfilePhotosType) => {
     return {type: UPDATE_PHOTO_SUCCESS, photos: photos} as const
 }
 
+/*---Экшен крейтор, который активирует режим редактирования профиля---*/
+export const editModeActivatedAC = () => {
+    return {type: EDIT_MODE_ACTIVATED} as const
+}
+
+/*---Экшен крейтор, который делает выход из режима редактирования профиля---*/
+export const editModeDeactivatedAC = () => {
+    return {type: EDIT_MODE_DEACTIVATED} as const
+}
 
 /*---Санка, делает запрос на сервер за информацией о текущем пользователе и диспатчим эту информацию в стейт---*/
 export const getUserProfileTC = (userId: number) => async (dispatch: Dispatch<ProfileActionType>) => {
@@ -212,12 +241,13 @@ export const savePhotoTC = (filePhoto: File) => async (dispatch: Dispatch<Profil
 }
 
 
-/*--- Функция обновления данных авторизованного пользователя ---*/
+/*--- Санка обновления данных авторизованного пользователя ---*/
 export const updateProfileInfoTC = (profile: ProfileObjectType) => async (dispatch: any, getState: any) => {
     const userId = getState().auth.userId;
     let response = await profileAPI.updateProfileInfo(profile);
     if (response.data.resultCode === 0) {
         dispatch(getUserProfileTC(userId));
+        dispatch(editModeDeactivatedAC());
     } else {
         dispatch(stopSubmit('description-form', {_error: response.data.messages[0]}))
         return Promise.reject(response.data.messages[0])

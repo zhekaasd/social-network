@@ -40,15 +40,16 @@ export const usersAuth = {
         /*---Запрос на сервер за авторизацией---*/
         return instance.get(`auth/me`)
     },
-    login(email: string, password: string, rememberMe: boolean = false) {
+    login(email: string, password: string, rememberMe: boolean = false, captcha: null | string  = null) {
         /*---Запрос на создание сессии, логинизация и отправка необхдимых данных---*/
-        return instance.post('auth/login', {email, password, rememberMe})
+        return instance.post('auth/login', {email, password, rememberMe, captcha})
     },
     logout() {
         /*---Запрос за удаление сессии, разлогинизация и удаление очистка куки---*/
         return instance.delete('auth/login')
     }
 }
+
 
 export const profileAPI = {
     getUserProfile(userId: number) {
@@ -74,5 +75,13 @@ export const profileAPI = {
     },
     updateProfileInfo(object: ProfileObjectType) {
         return instance.put('profile', object)
+    }
+}
+
+
+export const securityAPI = {
+    getCaptchaUrl() {
+        /*---Запрос на сервер за информацией о капче---*/
+        return instance.get(`security/get-captcha-url`)
     }
 }

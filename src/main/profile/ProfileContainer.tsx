@@ -2,6 +2,7 @@ import React from 'react';
 import {connect} from "react-redux";
 import {AppStateType} from "../../redux/redux-store";
 import {
+    editModeActivatedAC, editModeDeactivatedAC,
     getStatusUserTC,
     getUserProfileTC,
     ProfileObjectType, savePhotoTC, updateProfileInfoTC,
@@ -28,6 +29,7 @@ type MapStateToPropsType = {
     status: string
     authorizedUserId: number | null
     isFetching: boolean
+    editModeProfile: boolean
 }
 
 /*type MapPropsType = ReturnType<typeof mapStateToProps>;*/
@@ -39,6 +41,8 @@ type MapDispatchToProps = {
     updateStatusUser: (status: string) => void
     savePhoto: (filePhoto: File) => void
     updateProfileInfo: (profile: ProfileObjectType) => any
+    editModeActivated: () => void
+    editModeDeactivated: () => void
 }
 
 /*---Обощенная типизация данных и колбеков передаваемых в компоненту - ProfileContainer---*/
@@ -49,6 +53,9 @@ type PropsTypes = RouteComponentProps<ParamsType> & OwnPropsType;
 
 class ProfileContainer extends React.Component<PropsTypes, {}> {
 
+
+/*---Функция, счтывает из url-адреса данные, которые пришли в качестве параметров, проверяет, существует ли такой пользователь,
+и если пользователь сущесвует, запрашивает информацию о пользователе, его статус, контакты, имя и другую информацию---*/
     refreshProfile = () => {
         let userId: number | null = +this.props.match.params.userId;
         if (!userId) {
@@ -61,13 +68,13 @@ class ProfileContainer extends React.Component<PropsTypes, {}> {
         this.props.getStatusUser(userId as number);
     }
 
-/*---Метод жизненного цикла, который сообщает, что компонента была создана, счтывает из url-адреса данные, которые пришли
-в качестве параметров, проверяет, существует ли такой пользователь, и если пользователь сущесвует, запрашивает информацию о
-пользователе, его статус, контакты, имя и другую информацию---*/
+/*---Метод жизненного цикла, который сообщает, что компонента была создана, и запускает функцию запроса данных профайла---*/
     componentDidMount() {
         this.refreshProfile();
     }
 
+/*---Метод жизненного цикла, проверяет входящие параметры из url, и если новые данные отличаются от старых, то
+перерисовывает компоненту---*/
     componentDidUpdate(prevProps: Readonly<PropsTypes>, prevState: Readonly<PropsTypes>): void {
         if (this.props.match.params.userId !== prevProps.match.params.userId) {
             this.refreshProfile();
@@ -84,6 +91,9 @@ class ProfileContainer extends React.Component<PropsTypes, {}> {
                          status={this.props.status} updateStatusUser={this.props.updateStatusUser}
                          isOwner={!this.props.match.params.userId}
                          updateProfileInfo={this.props.updateProfileInfo}
+                         editModeProfile={this.props.editModeProfile}
+                         editModeActivated={this.props.editModeActivated}
+                         editModeDeactivated={this.props.editModeDeactivated}
                 />
             </div>
         );
@@ -96,7 +106,8 @@ const mapStateToProps = (state: AppStateType): MapStateToPropsType => {
         profile: getProfile(state),
         status: getStatus(state),
         authorizedUserId: getAuthorizedUserId(state),
-        isFetching: state.users.isFetching
+        isFetching: state.users.isFetching,
+        editModeProfile: state.profilePage.editModeProfile
     }
 }
 
@@ -116,7 +127,9 @@ export default compose<any>(
         getStatusUser: getStatusUserTC,
         updateStatusUser: updateStatusUserTC,
         savePhoto: savePhotoTC,
-        updateProfileInfo: updateProfileInfoTC
+        updateProfileInfo: updateProfileInfoTC,
+        editModeActivated: editModeActivatedAC,
+        editModeDeactivated: editModeDeactivatedAC
     }),
     withAuthRedirect,
     withRouter

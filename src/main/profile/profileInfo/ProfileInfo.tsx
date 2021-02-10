@@ -18,7 +18,10 @@ type ProfileInfoPropsType = {
     isFetching: boolean
     isOwner: boolean
     savePhoto: (filePhoto: File) => void
-    updateProfileInfo: (profile: ProfileObjectType) => Promise<any>
+    updateProfileInfo: (profile: ProfileObjectType) => any
+    editModeProfile: boolean
+    editModeActivated: () => void
+    editModeDeactivated: () => void
 }
 
 /*---Типизация данных профайла, о контактной информации пользователя---*/
@@ -28,6 +31,8 @@ type ContactsType = {
 
 
 const ProfileInfo = (props: ProfileInfoPropsType) => {
+
+    console.log(props);
 
 /*---Переключения режима редактирования данных профиля---*/
     let [editMode, setEditMode] = useState<boolean>(false);
@@ -50,21 +55,22 @@ const ProfileInfo = (props: ProfileInfoPropsType) => {
 
 /*---Включение режима редактирования профиля---*/
     const activatedEditMode = () => {
-        setEditMode(true);
+        props.editModeActivated();
+
     }
 
 /*---Выход из режима редактирования профиля---*/
     const deactivatedEditMode = () => {
-        setEditMode(false);
+        props.editModeDeactivated();
     }
 
 /*---Функция обновления данных профайла, собирающая данные из формы. После того, как функция зарезолвится, выполнить
 выход из режима редактирования(это не правильный подход)---*/
     const updateProfileInfo = (formData: ProfileObjectType) => {
-        props.updateProfileInfo(formData)
-            .then( res => {
+        props.updateProfileInfo(formData);
+/*            .then( res => {
                 setEditMode(false);
-            })
+            })*/
     }
 
     return(
@@ -81,9 +87,9 @@ const ProfileInfo = (props: ProfileInfoPropsType) => {
 
     {/*---Основные данные о пользователе---*/}
                 {
-                    editMode ? <DescriptionProfileFormRedux onSubmit={updateProfileInfo} deactivatedEditMode={deactivatedEditMode}
+                    props.editModeProfile ? <DescriptionProfileFormRedux onSubmit={updateProfileInfo} deactivatedEditMode={deactivatedEditMode}
                                                             profile={props.profile} initialValues={props.profile} />
-                    : <DescriptionProfile isOwner={props.isOwner} profile={props.profile}  activatedEditMode={activatedEditMode} />
+                    : <DescriptionProfile isOwner={props.isOwner} profile={props.profile} activatedEditMode={activatedEditMode} />
                 }
             </div>
         </div>

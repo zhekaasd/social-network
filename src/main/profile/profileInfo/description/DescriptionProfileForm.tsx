@@ -21,7 +21,6 @@ type DescriptionProfileFormType = {
 
 /*---Функция с реализацией формы---*/
 export const DescriptionProfileForm: React.FC<InjectedFormProps<ProfileObjectType, DescriptionProfileFormType> & DescriptionProfileFormType> = (props) => {
-    console.log(props)
     return <form onSubmit={props.handleSubmit}>
         <span className={styles.descriptionTitleInfo}>Description:</span>
         <>

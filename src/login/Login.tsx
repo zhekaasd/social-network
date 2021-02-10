@@ -9,8 +9,9 @@ import {getIsAuth} from "../redux/users-selectors";
 
 /*---Типизация входящих пропсов для компоненты - Login---*/
 type LoginType = {
-    login: (email: string, password: string, rememberMe: boolean) => void
+    login: (email: string, password: string, rememberMe: boolean, captcha: string | null) => void
     isAuth: boolean
+    captchaUrl: string | null
 }
 
 /*---Компонента с формой логинизации---*/
@@ -23,13 +24,13 @@ const Login: React.FC<LoginType> = React.memo ((props) => {
 
 /*---Делаем логинизацию с отправкой данных на сервер---*/
     const onSubmit = (formData: FormDataType) => {
-        props.login(formData.email, formData.password, formData.rememberMe);
+        props.login(formData.email, formData.password, formData.rememberMe, formData.captcha);
     }
 
     return (
         <div>
             <h1>Login</h1>
-            <LoginReduxForm onSubmit={onSubmit} />
+            <LoginReduxForm onSubmit={onSubmit} captchaUrl={props.captchaUrl} />
         </div>
     );
 });
@@ -39,18 +40,20 @@ const Login: React.FC<LoginType> = React.memo ((props) => {
 
 /*---Типизация колбеков передаваемых в компоненту - Login---*/
 type mapDispatchToPropsType = {
-    login: (email: string, password: string, rememberMe: boolean) => void
+    login: (email: string, password: string, rememberMe: boolean, captcha: any) => void
 }
 
 /*---Типизация пропсов передаваемых в компоненту - Login---*/
 type mapStateToProps = {
     isAuth: boolean
+    captchaUrl: string | null
 }
 
 /*---Прокидываем через пропсы в компоненту нужную нам часть данных из стейта---*/
 const mapStateToProps = (state: AppStateType) => {
     return {
-        isAuth: getIsAuth(state)
+        isAuth: getIsAuth(state),
+        captchaUrl: state.auth.captchaUrl
     }
 }
 
